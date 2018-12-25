@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>LED Control Center</title>
+    <link rel="stylesheet" href="framework7.min.css">
+  </head>
+  <body class="color-theme-green">
+    <div id="app">
+      <div class="view view-main">
+        <div data-name="home" class="page">
+          <!-- Top Navbar -->
+          <div class="navbar">
+            <div class="navbar-inner">
+              <div class="title">LED Control Center</div>
+            </div>
+          </div>
+          <!-- Scrollable page content -->
+          <div class="page-content">
+            <div class="block-title">List of LED controls options</div>
+            <div class="list accordion-list">
+              <ul>
+                <li class="accordion-item"><a href="#" class="item-content item-link">
+                  <div class="item-inner">
+                    <div class="item-title">Individual LEDs</div>
+                  </div></a>
+                  <div class="accordion-item-content text-align-center">
+                    <label class="checkbox">
+                      <input type="checkbox">
+                      <i class="icon-checkbox"></i>
+                    </label>
+                    <label class="checkbox">
+                      <input type="checkbox">
+                      <i class="icon-checkbox"></i>
+                    </label>
+                    <label class="checkbox">
+                      <input type="checkbox">
+                      <i class="icon-checkbox"></i>
+                    </label><br>
+                    <label class="checkbox">
+                      <input type="checkbox">
+                      <i class="icon-checkbox"></i>
+                    </label>
+                    <label class="checkbox">
+                      <input type="checkbox">
+                      <i class="icon-checkbox"></i>
+                    </label>
+                    <label class="checkbox">
+                      <input type="checkbox">
+                      <i class="icon-checkbox"></i>
+                    </label><br>
+                    <label class="checkbox">
+                      <input type="checkbox">
+                      <i class="icon-checkbox"></i>
+                    </label>
+                    <label class="checkbox">
+                      <input type="checkbox">
+                      <i class="icon-checkbox"></i>
+                    </label>
+                    <label class="checkbox">
+                      <input type="checkbox">
+                      <i class="icon-checkbox"></i>
+                    </label>                   
+                  </div>
+                </li>
+                <li class="accordion-item"><a href="#" class="item-content item-link">
+                  <div class="item-inner">
+                    <div class="item-title">One by One (Sweep)</div>
+                  </div></a>
+                  <div class="accordion-item-content">
+                    <div class="block">
+                      <div class="block-title">Speed</div>
+                      <div class="list simple-list">
+                        <ul>
+                          <li>
+                            <div class="item-cell width-auto flex-shrink-0">Slow</div>
+                            <div class="item-cell flex-shrink-3">
+                              <div class="range-slider range-slider-init color-orange" data-label="true">
+                                <input type="range" min="100" max="3000" step="100" value="1000">
+                              </div>
+                            </div>
+                            <div class="item-cell width-auto flex-shrink-0">Fast</div>
+                          </li>
+                        </ul>
+                        </div>
+                      </div>
+                  </div>
+                </li>
+                <li class="accordion-item"><a href="#" class="item-content item-link">
+                  <div class="item-inner">
+                    <div class="item-title">Row by Row</div>
+                  </div></a>
+                  <div class="accordion-item-content">
+                    <div class="block">                        
+                      <div class="block-title">Speed</div>
+                      <div class="list simple-list">
+                        <ul>
+                          <li>
+                            <div class="item-cell width-auto flex-shrink-0">Slow</div>
+                            <div class="item-cell flex-shrink-3">
+                              <div class="range-slider range-slider-init color-orange" data-label="true">
+                                <input type="range" min="100" max="3000" step="100" value="1000">
+                              </div>
+                            </div>
+                            <div class="item-cell width-auto flex-shrink-0">Fast</div>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="block-title">Direction</div>
+                      <div class="list">
+                        <ul>
+                          <li>
+                            <label class="item-radio item-content">
+                              <input type="radio" name="demo-radio" value="Books" checked />
+                              <i class="icon icon-radio"></i>
+                              <div class="item-inner">
+                                <div class="item-title">Top to Bottom</div>
+                              </div>
+                            </label>
+                          </li><li>
+                            <label class="item-radio item-content">
+                              <input type="radio" name="demo-radio" value="Movies"/>
+                              <i class="icon icon-radio"></i>
+                              <div class="item-inner">
+                                <div class="item-title">Bottom to Top</div>
+                              </div>
+                            </label>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </li>                 
+                <li class="accordion-item"><a href="#" class="item-content item-link">
+                  <div class="item-inner">
+                    <div class="item-title">Column by Column</div>
+                  </div></a>
+                  <div class="accordion-item-content">
+                    <div class="block">
+                      <div class="block-title">Speed</div>
+                      <div class="list simple-list">
+                        <ul>
+                          <li>
+                            <div class="item-cell width-auto flex-shrink-0">Slow</div>
+                            <div class="item-cell flex-shrink-3">
+                              <div class="range-slider range-slider-init color-orange" data-label="true">
+                                <input type="range" min="100" max="3000" step="100" value="1000">
+                              </div>
+                            </div>
+                            <div class="item-cell width-auto flex-shrink-0">Fast</div>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="block-title">Direction</div>
+                        <div class="list">
+                          <ul>
+                            <li>
+                              <label class="item-radio item-content">
+                                <input type="radio" name="demo-radio" value="Books" checked/>
+                                <i class="icon icon-radio"></i>
+                                <div class="item-inner">
+                                  <div class="item-title">Left to Right</div>
+                                </div>
+                              </label>
+                            </li><li>
+                              <label class="item-radio item-content">
+                                <input type="radio" name="demo-radio" value="Movies"/>
+                                <i class="icon icon-radio"></i>
+                                <div class="item-inner">
+                                  <div class="item-title">Right to Left</div>
+                                </div>
+                              </label>
+                            </li>
+                          </ul>
+                        </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="accordion-item"><a href="#" class="item-content item-link">
+                  <div class="item-inner">
+                    <div class="item-title">Circle (Rotation)</div>
+                  </div></a>
+                  <div class="accordion-item-content">
+                    <div class="block">
+                      <div class="block-title">Speed</div>
+                      <div class="list simple-list">
+                        <ul>
+                          <li>
+                            <div class="item-cell width-auto flex-shrink-0">Slow</div>
+                            <div class="item-cell flex-shrink-3">
+                              <div class="range-slider range-slider-init color-orange" data-label="true">
+                                <input type="range" min="100" max="3000" step="100" value="1000">
+                              </div>
+                            </div>
+                            <div class="item-cell width-auto flex-shrink-0">Fast</div>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="block-title">Direction</div>
+                        <div class="list">
+                          <ul>
+                            <li>
+                              <label class="item-radio item-content">
+                                <input type="radio" name="demo-radio" value="Books" checked />
+                                <i class="icon icon-radio"></i>
+                                <div class="item-inner">
+                                  <div class="item-title">Left to Right</div>
+                                </div>
+                              </label>
+                            </li><li>
+                              <label class="item-radio item-content">
+                                <input type="radio" name="demo-radio" value="Movies"/>
+                                <i class="icon icon-radio"></i>
+                                <div class="item-inner">
+                                  <div class="item-title">Right to Left</div>
+                                </div>
+                              </label>
+                            </li>
+                          </ul>
+                        </div>                          
+                        <div class="block-title">Number of LEDs</div>
+                          <div class="list text-align-center">
+                            <ul>
+                              <li>
+                                <div class="stepper stepper-fill stepper-init">
+                                  <div class="stepper-button-minus"></div>
+                                  <div class="stepper-input-wrap">
+                                    <input type="text" value="1" min="1" max="9" step="1" readonly>
+                                  </div>
+                                  <div class="stepper-button-plus"></div> 
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                      </div>
+                  </div>
+                </li>
+                <li class="accordion-item"><a href="#" class="item-content item-link">
+                  <div class="item-inner">
+                    <div class="item-title">Swap</div>
+                  </div></a>
+                  <div class="accordion-item-content">
+                    <div class="block">
+                        <p>Item 2 content. Lorem ipsum dolor sit amet...</p>
+                    </div>
+                  </div>
+                </li>                 
+                <li class="accordion-item"><a href="#" class="item-content item-link">
+                  <div class="item-inner">
+                    <div class="item-title">Arrow</div>
+                  </div></a>
+                  <div class="accordion-item-content">
+                    <div class="block">
+                      <p>Item 2 content. Lorem ipsum dolor sit amet...</p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="framework7.min.js"></script>
+    <script type="text/javascript" src="my_app.js"></script>
+  </body>
+</html>

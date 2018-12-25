@@ -53,12 +53,14 @@ void new_cli()
  */
 void handle_root()
 {
+  Serial.println("-> \"index.html\" requested");
 	File f = SPIFFS.open("/index.html", "r");
 	if (!f) {
 		Serial.println("File: \"index.html\" could not be opened.");
 		return;
 	}
-	size_t wserver.streamFile(f, "text/html");
+	size_t sent = wserver.streamFile(f, "text/html");
+  (void)sent;
 	f.close();
 
 	digitalWrite(LED_1, HIGH);
@@ -77,12 +79,14 @@ void handle_root()
  */
 void handle_fcss()
 {
+  Serial.println("-> \"framework7.min.css\" requested");  
 	File f = SPIFFS.open("/framework7.min.css", "r");
 	if (!f) {
 		Serial.println("File: \"framework7.min.css\" could not be opened.");
 		return;
 	}
-	size_t wserver.streamFile(f, "text/css");
+	size_t sent = wserver.streamFile(f, "text/css");
+  (void)sent;
 	f.close(); 
 }
 
@@ -91,12 +95,14 @@ void handle_fcss()
  */
 void handle_fjs()
 {
+  Serial.println("-> \"framework7.min.js\" requested");
 	File f = SPIFFS.open("/framework7.min.js", "r");
 	if (!f) {
 		Serial.println("File: \"framework7.min.js\" could not be opened.");
 		return;
 	}
-	size_t wserver.streamFile(f, "application/javascript");
+	size_t sent = wserver.streamFile(f, "application/javascript");
+  (void)sent;
 	f.close(); 
 }
 
@@ -105,12 +111,14 @@ void handle_fjs()
  */
 void handle_app_js()
 {
+  Serial.println("-> \"my_app.js\" requested");  
 	File f = SPIFFS.open("/my_app.js", "r");
 	if (!f) {
 		Serial.println("File: \"my_app.js\" could not be opened.");
 		return;
 	}
-	size_t wserver.streamFile(f, "application/javascript");
+	size_t sent = wserver.streamFile(f, "application/javascript");
+  (void)sent;
 	f.close(); 
 }
 
@@ -126,7 +134,7 @@ void handle_not_found()
 
 
 /* Setup Code */
-void setup() 
+void setup()
 {
 	delay(1000);
 	Serial.begin(115200);		/* Configuring serial monitor */
@@ -139,13 +147,6 @@ void setup()
 	if (!(SPIFFS.begin())) {			/* Mounts the SPIFFS file system */
 		Serial.println("Failed to start SPIFFS, restarting ...");	
 		ESP.restart();
-	}
-	
-	Serial.println("Opening main index file ...");
-	index = SPIFFS.open("index.html", "r");
-	if (!index) {
-		Serial.println("Failed to open index file, restarting ...");	
-		ESP.restart();	
 	}
 
 	/* Set pins to output */
