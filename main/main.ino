@@ -53,15 +53,15 @@ void new_cli()
  */
 void handle_root()
 {
-  Serial.println("-> \"index.html\" requested");
-	File f = SPIFFS.open("/index.html", "r");
+  	Serial.println("-> \"index.html\" requested");
+/*	File f = SPIFFS.open("/index.html", "r");
 	if (!f) {
 		Serial.println("File: \"index.html\" could not be opened.");
 		return;
 	}
 	size_t sent = wserver.streamFile(f, "text/html");
-  (void)sent;
-	f.close();
+	(void)sent;
+	f.close(); */
 
 	digitalWrite(LED_1, HIGH);
 	digitalWrite(LED_2, HIGH);
@@ -79,15 +79,16 @@ void handle_root()
  */
 void handle_fcss()
 {
-  Serial.println("-> \"framework7.min.css\" requested");  
+	Serial.println("-> \"framework7.min.css\" requested");  
+	/*
 	File f = SPIFFS.open("/framework7.min.css", "r");
 	if (!f) {
 		Serial.println("File: \"framework7.min.css\" could not be opened.");
 		return;
 	}
 	size_t sent = wserver.streamFile(f, "text/css");
-  (void)sent;
-	f.close(); 
+	(void)sent;
+	f.close();  */
 }
 
 /**
@@ -95,7 +96,8 @@ void handle_fcss()
  */
 void handle_fjs()
 {
-  Serial.println("-> \"framework7.min.js\" requested");
+	Serial.println("-> \"framework7.min.js\" requested");
+	/*
 	File f = SPIFFS.open("/framework7.min.js", "r");
 	if (!f) {
 		Serial.println("File: \"framework7.min.js\" could not be opened.");
@@ -103,7 +105,7 @@ void handle_fjs()
 	}
 	size_t sent = wserver.streamFile(f, "application/javascript");
   (void)sent;
-	f.close(); 
+	f.close();  */
 }
 
 /**
@@ -111,15 +113,16 @@ void handle_fjs()
  */
 void handle_app_js()
 {
-  Serial.println("-> \"my_app.js\" requested");  
+	Serial.println("-> \"my_app.js\" requested");  
+	/*
 	File f = SPIFFS.open("/my_app.js", "r");
 	if (!f) {
 		Serial.println("File: \"my_app.js\" could not be opened.");
 		return;
 	}
 	size_t sent = wserver.streamFile(f, "application/javascript");
-  (void)sent;
-	f.close(); 
+	(void)sent;
+	f.close(); */
 }
 
 /**
@@ -161,6 +164,8 @@ void setup()
 	pinMode(PIN_D7, OUTPUT);
 	pinMode(PIN_D8, OUTPUT);
 
+	/* TODO reset LEDs */
+
 	/* Configuring AP mode */
 	Serial.print("Starting soft-AP mode ...");
 	if (!(WiFi.softAP(ssid, pass))) {	
@@ -168,7 +173,7 @@ void setup()
 		ESP.restart();
 	}
 	Serial.println("Success");	
-	WiFi.printDiag(Serial);		/* Get diagnostic info */
+	/* WiFi.printDiag(Serial); */		/* Get diagnostic info */
 
 	Serial.print("Soft-AP IP Address: ");
 	Serial.println(WiFi.softAPIP());		
@@ -182,8 +187,6 @@ void setup()
 	wserver.onNotFound(handle_not_found);
 	wserver.begin();
 	Serial.println("Web Server started!");
-
-
 }
 
 
