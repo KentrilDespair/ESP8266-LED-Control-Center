@@ -9,16 +9,16 @@
 
 
 #include "main.h"
+#include "definitions.h"     // TODO HEEADERS
+// #include "index_html.h"
+#include <FS.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
-#include "definitions.h" 		// TODO HEEADERS
-
-#include "index_html.h"
 
 
 ESP8266WebServer wserver(80);
-/* FILE *index;					 Pointer to main page */
+FILE *index;					/* Pointer to main page */
 
 // WiFiServer.hasClient()
 // WiFiServer.available(byte *status);
@@ -28,7 +28,7 @@ ESP8266WebServer wserver(80);
  */
 void get_diag_info()
 {
-	Serial.printf("CPU frequency: %u Mhz\n", ESP.getCpuFreqMhz());
+	Serial.printf("CPU frequency: %u Mhz\n", ESP.getCpuFreqMHz());
 	Serial.printf("Size of the current sketch: %u\n", ESP.getSketchSize());
 	Serial.printf("Free sketch size: %u\n", ESP.getFreeSketchSpace());
 	Serial.printf("Flash chip size: %u\n", ESP.getFlashChipSize());
@@ -47,7 +47,7 @@ void new_cli()
 
 	Serial.print("New client has connected at: ");
 	Serial.println(cli.remoteIP());		
-	Serial.printf("Total connected: %d\n, "WiFi.softAPgetStationNum());
+	Serial.printf("Total connected: %d\n", WiFi.softAPgetStationNum());
 }
 
 /**
@@ -56,8 +56,17 @@ void new_cli()
 void handle_root()
 {
 	// TODO
-	server.send(200, "text/html", "<h1>Main Page</h1>");
-
+  char *buffer;
+  fseek(index, 0, SEEK_END);
+  length = ftell (index);
+  fseek (index, 0, SEEK_SET);
+  buffer = malloc (length);
+  if (buffer)
+  {
+    fread (buffer, 1, length, f);
+  }
+	wserver.send(200, "text/html", buffer);
+  free(buffer);
 	digitalWrite(LED_1, HIGH);
 	digitalWrite(LED_2, HIGH);
 	digitalWrite(LED_3, HIGH);
@@ -70,17 +79,20 @@ void handle_root()
 }
 
 /**
+ * @brief H
+ */
+void handle_fcss()
+{
+    
+}
+
+/**
  * @brief Handles not found documents
  */
 void handle_not_found()
 {
 	String msg = "<h1>Not Found</h1>";
-	// TODO string
-	for (uint8_t i = 0; i < wserver.args(); i++) {
-		msg += " " + wserver.argName(i) + ": " + wserver.arg(i) + "<br>";
-		// TODO rather PRINT or NOTHING
-	}
-	server.send(404, "text/html", msg);
+	wserver.send(404, "text/html", msg);
 }
 
 
@@ -93,9 +105,9 @@ void setup() {
 	get_diag_info();
 
 	/* SPIFFS configuration */
-/*	Serial.println("Starting SPIFFS ..."); 
-	if (!(SPIFFS.begin())) {			 Mounts the SPIFFS file system */
-/*		Serial.println("Failed to start SPIFFS, restarting ...");	
+	Serial.println("Starting SPIFFS ..."); 
+	if (!(SPIFFS.begin())) {			/* Mounts the SPIFFS file system */
+		Serial.println("Failed to start SPIFFS, restarting ...");	
 		ESP.restart();
 	}
 	
@@ -104,9 +116,10 @@ void setup() {
 	if (!index) {
 		Serial.println("Failed to open index file, restarting ...");	
 		ESP.restart();	
-	} */
+	}
 
 	/* Set pins to output */
+  Serial.println("Setting pins ...");
 	pinMode(PIN_D0, OUTPUT);
 	pinMode(PIN_D1, OUTPUT);
 	pinMode(PIN_D2, OUTPUT);
@@ -132,9 +145,13 @@ void setup() {
 
 	/* Configuring web server */
 	wserver.on("/", handle_root);
+  wserver.on("/framework7.min.css", handle_fcss);
+  wserver.on("/framework7.min.js", handle_fjs);
+  wserver.on("/my_app.js", handle_app_js);
 	wserver.onNotFound(handle_not_found);
 	wserver.begin();
 	Serial.println("Web Server started!");
+
 
 }
 

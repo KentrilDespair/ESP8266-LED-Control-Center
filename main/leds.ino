@@ -118,13 +118,13 @@ void seq_row(uint8_t speed, uint8_t pos)
 			pos = POS_TOP;
 			break;
 		}
-		set_led(seq_arr[LED_4], ON);
-		set_led(seq_arr[LED_5], ON);
-		set_led(seq_arr[LED_6], ON);	
+		set_led(LED_4, ON);
+		set_led(LED_5, ON);
+		set_led(LED_6, ON);
 		delay(speed);
-		set_led(seq_arr[LED_4], OFF);
-		set_led(seq_arr[LED_5], OFF);
-		set_led(seq_arr[LED_6], OFF);
+		set_led(LED_4, OFF);
+		set_led(LED_5, OFF);
+		set_led(LED_6, OFF);
 		set_led(seq_arr[pos-1], ON);
 		set_led(seq_arr[pos], ON);
 		set_led(seq_arr[pos+1], ON);	
@@ -168,13 +168,13 @@ void seq_col(uint8_t speed, uint8_t pos)
 			pos = POS_LEFT;
 			break;
 		}
-		set_led(seq_arr[LED_2], ON);
-		set_led(seq_arr[LED_5], ON);
-		set_led(seq_arr[LED_8], ON);	
+		set_led(LED_2, ON);
+		set_led(LED_5, ON);
+		set_led(LED_8, ON);	
 		delay(speed);
-		set_led(seq_arr[LED_2], OFF);
-		set_led(seq_arr[LED_5], OFF);
-		set_led(seq_arr[LED_8], OFF);	
+		set_led(LED_2, OFF);
+		set_led(LED_5, OFF);
+		set_led(LED_8, OFF);	
 		set_led(seq_arr[pos-1], ON);
 		set_led(seq_arr[pos], ON);
 		set_led(seq_arr[pos+1], ON);	
@@ -193,17 +193,18 @@ void seq_col(uint8_t speed, uint8_t pos)
  */
 void seq_circle(uint8_t speed, uint8_t led_len, uint8_t direct)
 {
+  (void)direct;
 	change_seq(SEQ_CIRC);
 	uint8_t cseq_arr[] = {LED_1, LED_2, LED_3, 
 					 	  LED_4,		LED_6, 
 						  LED_7, LED_8, LED_9};
-	uint8_t i = 0;		/* Current Led */
-	uint8_t y = 0;
+	int8_t i = 0;		/* Current Led */
+	int8_t y = 0;
 	while(42)
 	{
 		for (uint8_t num = 0; num < led_len; num++)
 		{	
-			set_led(seq_arr[i], ON);
+			set_led(cseq_arr[i], ON);
 			i = (i+1)%(TOTAL_LED-1);
 		}
 		y = i-1;
@@ -211,7 +212,7 @@ void seq_circle(uint8_t speed, uint8_t led_len, uint8_t direct)
 		delay(speed-10);
 		for (uint8_t num = 0; num < led_len; num++)
 		{	
-			set_led(seq_arr[y], OFF);
+			set_led(cseq_arr[y], OFF);
 			if (!y) { y = 8; }
 			y = (y-1)%(TOTAL_LED-1);
 		}
@@ -264,7 +265,7 @@ void seq_arrow(uint8_t speed, uint8_t direct)
 	change_seq(SEQ_ARROW);
 	switch(direct)
 	{
-	case POS_TOP: POS_LEFT: POS_RIGHT: POS_BOTTOM: /* TODO make more*/
+	case POS_TOP: case POS_LEFT: case POS_RIGHT: case POS_BOTTOM: /* TODO make more*/
 		set_led(LED_2, ON);
 		delay(speed);
 
