@@ -54,14 +54,24 @@ void new_cli()
 void handle_root()
 {
   	Serial.println("-> \"index.html\" requested");
-/*	File f = SPIFFS.open("/index.html", "r");
+	File f = SPIFFS.open("/index.html", "r");
 	if (!f) {
 		Serial.println("File: \"index.html\" could not be opened.");
 		return;
 	}
-	size_t sent = wserver.streamFile(f, "text/html");
-	(void)sent;
-	f.close(); */
+  Serial.printf("Reserving: %u\n", f.size());
+
+  String buff;
+  buff.reserve(f.size()+1);
+  while (f.available()) {
+    buff += char(f.read());  
+  }
+  Serial.println("Now sending ... ");
+  wserver.send(200, "text/html", buff);
+  
+//	size_t sent = wserver.streamFile(f, "text/html");
+//	(void)sent;
+	f.close();
 
 	digitalWrite(LED_1, HIGH);
 	digitalWrite(LED_2, HIGH);
