@@ -32,6 +32,8 @@
 #define LED_9 PIN_D8
 #define TOTAL_LED 9
 
+#define BUFF_SIZE 4096
+
 #define ON HIGH
 #define OFF LOW
 
@@ -54,3 +56,4 @@
 
 #define CLKW 97			/* Clockwise 		*/
 #define ACLKW 98		/* Anticlockwise 	*/
+

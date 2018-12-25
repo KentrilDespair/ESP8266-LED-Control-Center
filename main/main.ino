@@ -17,6 +17,7 @@
 
 
 ESP8266WebServer wserver(80);
+String str_buff;					/* Globally accessible buffer*/
 
 // WiFiServer.hasClient()
 // WiFiServer.available(byte *status);
@@ -54,23 +55,23 @@ void new_cli()
 void handle_root()
 {
   	Serial.println("-> \"index.html\" requested");
-	File f = SPIFFS.open("/index.html", "r");
+	File f = SPIFFS.open("/index.html.gz", "r");
 	if (!f) {
 		Serial.println("File: \"index.html\" could not be opened.");
 		return;
 	}
   Serial.printf("Reserving: %u\n", f.size());
 
-  String buff;
+/*  String buff;
   buff.reserve(f.size()+1);
   while (f.available()) {
     buff += char(f.read());  
   }
   Serial.println("Now sending ... ");
-  wserver.send(200, "text/html", buff);
+  wserver.send(200, "text/html", buff); */
   
-//	size_t sent = wserver.streamFile(f, "text/html");
-//	(void)sent;
+	size_t sent = wserver.streamFile(f, "text/html");
+	(void)sent;
 	f.close();
 
 	digitalWrite(LED_1, HIGH);
@@ -85,20 +86,47 @@ void handle_root()
 }
 
 /**
- * @brief Handles framework CSS
+ * @brief Handles framework CSS TODO ONE COMMON BREAK UP FUNCTION
  */
 void handle_fcss()
 {
 	Serial.println("-> \"framework7.min.css\" requested");  
-	/*
-	File f = SPIFFS.open("/framework7.min.css", "r");
+	File f = SPIFFS.open("/framework7.min.css.gz", "r");
 	if (!f) {
 		Serial.println("File: \"framework7.min.css\" could not be opened.");
 		return;
 	}
-	size_t sent = wserver.streamFile(f, "text/css");
-	(void)sent;
-	f.close();  */
+
+	wserver.setContentLength(f.size()); /* Chunked */
+	uint32_t B_pos;						/* xth byte in file */
+	bool first_part = true;				/* First part needs to be sent */
+	
+	while(f.available()) 
+	{
+		B_pos = 0;
+		str_buff[0] = '\0';					/* "Clears" the string */
+		if (f.size() < BUFF_SIZE-2)			/* Last chunk */
+			break;
+
+		while (B_pos < BUFF_SIZE-1) {
+			str_buff += char(f.read());	
+			B_pos++;
+		}
+
+		if (first_part)	
+		{
+			wserver.send(200, "text/html", str_buff);
+			first_part = false;
+			continue;
+		}
+		wserver.sendContent(str_buff);
+	}
+
+	while(f.available()) {
+    	str_buff += char(f.read());  
+	}
+	wserver.sendContent(str_buff);
+	f.close();
 }
 
 /**
@@ -188,6 +216,8 @@ void setup()
 	Serial.print("Soft-AP IP Address: ");
 	Serial.println(WiFi.softAPIP());		
 	Serial.println("-----------------");
+
+	str_buff.reserve(BUFF_SIZE);
 
 	/* Configuring web server */
 	wserver.on("/", handle_root);
