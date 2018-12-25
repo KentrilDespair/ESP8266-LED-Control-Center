@@ -10,7 +10,6 @@
 
 #include "main.h"
 #include "definitions.h"     // TODO HEEADERS
-// #include "index_html.h"
 #include <FS.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
@@ -18,7 +17,6 @@
 
 
 ESP8266WebServer wserver(80);
-FILE *index;					/* Pointer to main page */
 
 // WiFiServer.hasClient()
 // WiFiServer.available(byte *status);
@@ -55,18 +53,14 @@ void new_cli()
  */
 void handle_root()
 {
-	// TODO
-  char *buffer;
-  fseek(index, 0, SEEK_END);
-  length = ftell (index);
-  fseek (index, 0, SEEK_SET);
-  buffer = malloc (length);
-  if (buffer)
-  {
-    fread (buffer, 1, length, f);
-  }
-	wserver.send(200, "text/html", buffer);
-  free(buffer);
+	File f = SPIFFS.open("/index.html", "r");
+	if (!f) {
+		Serial.println("File: \"index.html\" could not be opened.");
+		return;
+	}
+	size_t wserver.streamFile(f, "text/html");
+	f.close();
+
 	digitalWrite(LED_1, HIGH);
 	digitalWrite(LED_2, HIGH);
 	digitalWrite(LED_3, HIGH);
@@ -79,11 +73,45 @@ void handle_root()
 }
 
 /**
- * @brief H
+ * @brief Handles framework CSS
  */
 void handle_fcss()
 {
-    
+	File f = SPIFFS.open("/framework7.min.css", "r");
+	if (!f) {
+		Serial.println("File: \"framework7.min.css\" could not be opened.");
+		return;
+	}
+	size_t wserver.streamFile(f, "text/css");
+	f.close(); 
+}
+
+/**
+ * @brief Handles the framework7.min.js file
+ */
+void handle_fjs()
+{
+	File f = SPIFFS.open("/framework7.min.js", "r");
+	if (!f) {
+		Serial.println("File: \"framework7.min.js\" could not be opened.");
+		return;
+	}
+	size_t wserver.streamFile(f, "application/javascript");
+	f.close(); 
+}
+
+/**
+ * @brief Handles the app.js file
+ */
+void handle_app_js()
+{
+	File f = SPIFFS.open("/my_app.js", "r");
+	if (!f) {
+		Serial.println("File: \"my_app.js\" could not be opened.");
+		return;
+	}
+	size_t wserver.streamFile(f, "application/javascript");
+	f.close(); 
 }
 
 /**
@@ -92,12 +120,14 @@ void handle_fcss()
 void handle_not_found()
 {
 	String msg = "<h1>Not Found</h1>";
+	msg += wserver.uri();
 	wserver.send(404, "text/html", msg);
 }
 
 
 /* Setup Code */
-void setup() {
+void setup() 
+{
 	delay(1000);
 	Serial.begin(115200);		/* Configuring serial monitor */
 	Serial.println();
@@ -119,7 +149,7 @@ void setup() {
 	}
 
 	/* Set pins to output */
-  Serial.println("Setting pins ...");
+	Serial.println("Setting pins ...");
 	pinMode(PIN_D0, OUTPUT);
 	pinMode(PIN_D1, OUTPUT);
 	pinMode(PIN_D2, OUTPUT);
@@ -145,9 +175,9 @@ void setup() {
 
 	/* Configuring web server */
 	wserver.on("/", handle_root);
-  wserver.on("/framework7.min.css", handle_fcss);
-  wserver.on("/framework7.min.js", handle_fjs);
-  wserver.on("/my_app.js", handle_app_js);
+	wserver.on("/framework7.min.css", handle_fcss);
+	wserver.on("/framework7.min.js", handle_fjs);
+	wserver.on("/my_app.js", handle_app_js);
 	wserver.onNotFound(handle_not_found);
 	wserver.begin();
 	Serial.println("Web Server started!");
