@@ -9,7 +9,7 @@
 
 
 #include "main.h"
-#include "definitions.h"     // TODO HEEADERS
+#include "definitions.h"     // TODO HEEADERS ONLY USED - VISIBLE
 #include <FS.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
@@ -115,17 +115,90 @@ void handle_not_found()
 {
 	String msg = "<h1>Not Found</h1>";
 	msg += wserver.uri();
+	msg += "Arguments: ";
+	msg += wserver.args();			// IS NUM
+	msg += "\n";
+
+	for (uint8_t i = 0; i < wserver.args(); i++) {
+		msg += " " + wserver.argName(i)	+ ": " + wserver.arg(i) + "\n";
+	}
+
 	wserver.send(404, "text/html", msg);
 
-  if ()
-	seq_individual(LED_1, ON);
-	seq_individual(LED_5, ON);
-	seq_individual(LED_9, ON);
+	String req = wserver.uri();		/* Request */
 
-  
+	if (req.indexOf("/ind") != -1)	/* TODO SERVER ON */
+	{
+		if (wserver.args() < 2)	{ return; }
+		seq_individual((wserver.arg(0)).toInt, (wserver.arg(1)).toInt);
+		change_seq(SEQ_INDIV);	/* No function call will be done */
+	}
+	else if (req.indexOf("/one"))
+	{
+		if (wserver.args() < 1)	{ return; }
+		cur_speed = (wserver.arg(0)).toInt();
+		change_seq(SEQ_ONE);
+	
+	}
+	else if (req.indexOf("/row"))
+	{
+		if (wserver.args() < 2)	{ return; }
+		cur_speed = (wserver.arg(0)).toInt();
+		cur_pos = (wserver.arg(1)).toInt();
+		change_seq(SEQ_ROW);
+	
+	}
+	else if (req.indexOf("/col"))
+	{
+		if (wserver.args() < 2)	{ return; }	
+		cur_speed = (wserver.arg(0)).toInt();
+		cur_pos = (wserver.arg(1)).toInt();
+		change_seq(SEQ_COL);
+	}
+	else if (req.indexOf("/cir"))
+	{
+		if (wserver.args() < 3)	{ return; }
+		cur_speed = (wserver.arg(0)).toInt();
+		cur_len = (wserver.arg(1)).toInt();
+		cur_direct = (wserver.arg(2)).toInt();
+		change_seq(SEQ_CIRC);
+	}
+	else if (req.indexOf("/swp"))
+	{
+		if (wserver.args() < 1)	{ return; }
+		cur_speed = (wserver.arg(0)).toInt();
+		change_seq(SEQ_SWAP);
+	}
+	else if (req.indexOf("/arw"))	
+	{
+		if (wserver.args() < 2)	{ return; }
+		cur_speed = (wserver.arg(0)).toInt();
+		cur_direct = (wserver.arg(1)).toInt();
+		change_seq(SEQ_ARROW);
+	}
+	else	/* Just a normal not found */
+		return;
+
+	if (cur_speed < 100 || cur_speed > 3000) {
+		speed = 1000;			/* Back to default */
+	}
+	if (cur_pos != POS_TOP && cur_pos != POS_LEFT && 
+		cur_pos != POS_RIGHT && cur_pos != POS_BOTTOM) {
+		cur_pos = POS_TOP; 
+	}
+
+	if (cur_len > 9) {
+		cur_len = 1;
+	}
+
+	if (cur_direct != CLKW && cur_direct != ACLKW) {
+		cur_direct = CLKW;
+	}
+
+	end_timer = millis() + cur_speed;
+	cur_seq_continue();
 
 	// seq_one_by_one(1000);
-
 	// seq_row(1000, POS_TOP);
 	// seq_col(1000, POS_TOP);
 	// seq_circle(1000, 1, CLKW);
@@ -133,7 +206,8 @@ void handle_not_found()
 	// seq_arrow(1000, POS_RIGHT);
 }
 
-// /ind?led=x
+// /ind?led=x&state=1
+// /one?speed=xxxx
 // /row?speed=xxxx&pos=1
 // /col?speed=xxxx&pos=1
 // /cic?speed=xxxx&len=x&dir=1
@@ -172,6 +246,7 @@ void setup()
 
 	/* Reset LEDs */
 	led_reset();
+	cur_len = 1;		/* Max. number of LEDs ON */
   
 	/* Configuring AP mode */
 	Serial.print("Starting soft-AP mode ...");
@@ -199,7 +274,11 @@ void setup()
 
 /* Main Loop */
 void loop() {
-	wserver.handleClient();
-	
-	/* cur_seq_continue(); */
+	wserver.handleClient();	
+
+	if (millis() >= end_timer)	
+	{
+		cur_seq_continue();
+		end_timer += cur_speed;
+	}
 }

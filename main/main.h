@@ -19,6 +19,9 @@ uint8_t cur_pos;		/* Current position */
 uint8_t cur_len;		/* Current Number of LEDs */
 uint8_t cur_direct;	/* Current direction */
 
+//uint32_t start_timer;
+uint32_t end_timer;
+
 void get_diag_info();
 void new_cli();
 void send_file(const char *fn, const char *c_type);

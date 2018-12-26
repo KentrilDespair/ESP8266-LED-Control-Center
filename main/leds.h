@@ -18,10 +18,11 @@
 extern void led_reset();
 extern void set_led(uint8_t led_pin, uint8_t state);
 extern void change_seq(uint8_t seq_id);
-
+void cur_seq_continue();
 
 /* Single sequences */
-void seq_individual(uint8_t led_pin, bool state);
+/* TODO CHANGE HEADERS HAVE GLOBALS ! */
+void seq_individual(uint8_t led, uint8_t state);
 void seq_one_by_one(uint16_t speed);
 void seq_row(uint16_t speed, uint8_t pos);
 void seq_col(uint16_t speed, uint8_t pos);
