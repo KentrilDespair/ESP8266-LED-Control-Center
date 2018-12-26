@@ -13,6 +13,14 @@
 const char *ssid = "LED CC";
 const char *pass = "ledcontrolcenter";
 
+/* LED Global variables */
+uint8_t cur_seq;		/* current sequence TODO in HEADER?? */
+uint8_t LED_cnt;		/* Auxilliary LED counter */
+uint8_t cur_speed;	/* Current speed */
+uint8_t cur_pos;		/* Current position */
+uint8_t cur_len;		/* Current Number of LEDs */
+uint8_t cur_direct;	/* Current direction */
+
 void get_diag_info();
 void new_cli();
 void send_file(const char *fn, const char *c_type);

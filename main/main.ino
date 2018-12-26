@@ -113,6 +113,18 @@ void handle_not_found()
 	String msg = "<h1>Not Found</h1>";
 	msg += wserver.uri();
 	wserver.send(404, "text/html", msg);
+
+	seq_individual(LED_1, ON);
+	seq_individual(LED_5, ON);
+	seq_individual(LED_9, ON);
+
+	seq_one_by_one(1000);
+
+	seq_row(1000, POS_TOP);
+	seq_col(1000, POS_LEFT);
+	seq_circle(1000, 1, CLKW);
+	seq_swap(1000);
+	seq_arrow(1000, CLKW):
 }
 
 
@@ -147,7 +159,7 @@ void setup()
 	pinMode(PIN_D8, OUTPUT);
 
 	/* Reset LEDs */
-  led_reset();
+	led_reset();
   
 	/* Configuring AP mode */
 	Serial.print("Starting soft-AP mode ...");
@@ -176,5 +188,6 @@ void setup()
 /* Main Loop */
 void loop() {
 	wserver.handleClient();
-
+	
+	/* cur_seq_continue(); */
 }

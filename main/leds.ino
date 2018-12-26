@@ -7,10 +7,15 @@
  */
 
 #include "leds.h"
+#include "main.h"
 
+/* Global declarations */
 extern uint8_t cur_seq;		/* current sequence TODO in HEADER?? */
 extern uint8_t LED_cnt;		/* Auxilliary LED counter */
-/* TODO needed global !! */
+extern uint8_t cur_speed;	/* Current speed */
+extern uint8_t cur_pos;		/* Current position */
+extern uint8_t cur_len;		/* Current Number of LEDs */
+extern uint8_t cur_direct;	/* Current direction */
 
 uint8_t seq_arr[] = {LED_1, LED_2, LED_3, 
 					 LED_4, LED_5, LED_6, 
@@ -24,7 +29,7 @@ uint8_t seq_arr[] = {LED_1, LED_2, LED_3,
 /**
  * @brief Sets all LED pins to digital LOW
  */
-inline void led_reset()	// TODO INLINE EXTERN TODO
+inline void led_reset()
 {
 	digitalWrite(LED_1, LOW);
 	digitalWrite(LED_2, LOW);
@@ -58,6 +63,36 @@ inline void change_seq(uint8_t seq_id)
 	{
 		led_reset();
 		cur_seq = seq_id;
+	}
+}
+
+/**
+ * @brief TODO
+ *
+ */
+void cur_seq_continue()
+{
+	switch(cur_seq)
+	{
+	/* case SEQ_INDIV: Is manual */
+	case SEQ_ONE:
+		seq_one_by_one(cur_speed);
+		break;
+	case SEQ_ROW:
+		seq_row(cur_speed, cur_pos);
+		break;
+	case SEQ_COL:
+		seq_row(cur_speed, cur_pos);
+		break;
+	case SEQ_CIRC:
+		seq_circle(cur_speed, cur_len, cur_direct)
+		break;
+	case SEQ_SWAP:
+		seq_swap(cur_speed);
+		break;
+	case SEQ_ARROW:
+		seq_arrow(cur_speed, cur_direct);
+		break;
 	}
 }
 
