@@ -7,7 +7,6 @@
  */
 
 #include "leds.h"
-#include "definitions.h"
 
 extern uint8_t cur_seq;		/* current sequence TODO in HEADER?? */
 extern uint8_t LED_cnt;		/* Auxilliary LED counter */
