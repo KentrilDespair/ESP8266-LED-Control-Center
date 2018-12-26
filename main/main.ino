@@ -146,8 +146,9 @@ void setup()
 	pinMode(PIN_D7, OUTPUT);
 	pinMode(PIN_D8, OUTPUT);
 
-	/* TODO reset LEDs */
-
+	/* Reset LEDs */
+  led_reset();
+  
 	/* Configuring AP mode */
 	Serial.print("Starting soft-AP mode ...");
 	if (!(WiFi.softAP(ssid, pass))) {	
