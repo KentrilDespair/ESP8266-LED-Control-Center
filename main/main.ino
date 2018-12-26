@@ -15,6 +15,7 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 
+/* TODO Global Variables */
 ESP8266WebServer wserver(80);       /* Web server */
 
 
@@ -47,21 +48,37 @@ void new_cli()
 }
 
 /**
+ * @brief Sends a certain file with certain content_type
+ *	If GZIP file exists, then is preffered.
+ * @param fn Path with a name of the file
+ * @param c_type Content type of the file
+ */
+void send_file(const char *fn, const char *c_type)
+{
+	new_cli();
+	String f_name(fn);
+	f_name += ".gz";							/* GZIP compressed file */
+	Serial.printf("-> \"%s\" requested\n", fn);
+
+	// TODO if EXISTS!! & server accpets!
+
+	File f = SPIFFS.open(f_name, "r");    /* FS to open a file */
+	if (!f) {
+		Serial.printf("File: \"%s\" could not be opened.\n", f_name);
+		return;
+	}
+
+	size_t len = wserver.streamFile(f, c_type);		/* Has less size */
+	(void)len;
+	f.close();
+}
+
+/**
  * @brief Handles request of the root dir
  */
 void handle_root()
 {
-  new_cli();
-  Serial.println("-> \"index.html\" requested");
-	File f = SPIFFS.open("/index.html.gz", "r");        /* */
-	if (!f) {
-		Serial.println("File: \"index.html\" could not be opened.");
-		return;
-	}
-
-	size_t sent = wserver.streamFile(f, "text/html");	/* Has less size */
-	(void)sent;
-	f.close();
+	send_file("/index.html", "text/html");
 }
 
 /**
