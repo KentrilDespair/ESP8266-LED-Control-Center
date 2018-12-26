@@ -15,12 +15,8 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 
+ESP8266WebServer wserver(80);       /* Web server */
 
-ESP8266WebServer wserver(80);
-String str_buff;					/* Globally accessible buffer */
-
-// WiFiServer.hasClient()
-// WiFiServer.available(byte *status);
 
 /**
  * @brief Prints diagnostic info
@@ -45,8 +41,8 @@ void new_cli()
 		return;
 	}
 
-	Serial.print("New client has connected at: ");
-	Serial.println(cli.remoteIP());		
+	Serial.print("Request from client: ");
+	Serial.println(cli.remoteIP());
 	Serial.printf("Total connected: %d\n", WiFi.softAPgetStationNum());
 }
 
@@ -55,8 +51,9 @@ void new_cli()
  */
 void handle_root()
 {
-  	Serial.println("-> \"index.html\" requested");
-	File f = SPIFFS.open("/index.html.gz", "r");
+  new_cli();
+  Serial.println("-> \"index.html\" requested");
+	File f = SPIFFS.open("/index.html.gz", "r");        /* */
 	if (!f) {
 		Serial.println("File: \"index.html\" could not be opened.");
 		return;
@@ -78,41 +75,9 @@ void handle_fcss()
 		Serial.println("File: \"framework7.min.css\" could not be opened.");
 		return;
 	}
+  size_t sent = wserver.streamFile(f, "text/css");
+  (void)sent;
 
-	wserver.setContentLength(f.size()); /* Chunked */
-	uint32_t B_pos;					    /* xth byte in file */
-	bool first_part = true;				/* First part needs to be sent */
-	
-	while(f.available()) 
-	{
-		B_pos = 0;
-		str_buff = "";  /* Clears the string, stupid, I know */   
-
-		if (f.size() - f.position() < BUFF_SIZE-1)	{		/* Last chunk */
-			Serial.println("Going to send last chunk");
-			break;
-		}
-		while (B_pos < BUFF_SIZE) {
-			str_buff += char(f.read());	
-			B_pos++;
-		}
-   
-		if (first_part)	
-		{
-      Serial.println("Sending first chunk");
-      wserver.sendHeader("Content-Encoding", "gzip");
-			wserver.send(200, "text/css", str_buff);
-			first_part = false;
-			continue;
-		}
-		wserver.sendContent(str_buff);
-	}
- 
-
-	while(f.available()) {
-    	str_buff += char(f.read());  
-	}
-	wserver.sendContent(str_buff);
 	f.close();
 }
 
@@ -128,38 +93,8 @@ void handle_fjs()
 		return;
 	}
 
-  wserver.setContentLength(f.size()); /* Chunked */
-  uint32_t B_pos;           /* xth byte in file */
-  bool first_part = true;       /* First part needs to be sent */
-  
-  while(42) 
-  {
-    B_pos = 0;
-    str_buff = "";  /* Clears the string */    
-
-    if (f.size() - f.position() >= BUFF_SIZE-1)   
-	{
-		while (B_pos < BUFF_SIZE) {
-			str_buff += char(f.read()); 
-			B_pos++;
-    	}
-	}
-	else						/* Last chunk */
-	{
-		while(f.available()) {
-      		str_buff += char(f.read());
-		}	
-	}
-
-    if (first_part) 
-    {
-      wserver.sendHeader("Content-Encoding", "gzip");
-      wserver.send(200, "application/javascript", str_buff);
-      first_part = false;
-      continue;
-    }
-    wserver.sendContent(str_buff);
-  }
+  size_t sent = wserver.streamFile(f, "application/javascript");
+  (void)sent;
 
 	f.close();
 }
@@ -253,7 +188,5 @@ void setup()
 /* Main Loop */
 void loop() {
 	wserver.handleClient();
-	/* Check if a client has connected */
-	new_cli();
 
 }
