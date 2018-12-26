@@ -117,19 +117,28 @@ void handle_not_found()
 	msg += wserver.uri();
 	wserver.send(404, "text/html", msg);
 
+  if ()
 	seq_individual(LED_1, ON);
 	seq_individual(LED_5, ON);
 	seq_individual(LED_9, ON);
 
-	seq_one_by_one(1000);
+  
 
-	seq_row(1000, POS_TOP);
-	seq_col(1000, POS_LEFT);
-	seq_circle(1000, 1, CLKW);
-	seq_swap(1000);
-	seq_arrow(1000, CLKW);
+	// seq_one_by_one(1000);
+
+	// seq_row(1000, POS_TOP);
+	// seq_col(1000, POS_TOP);
+	// seq_circle(1000, 1, CLKW);
+	// seq_swap(1000);
+	// seq_arrow(1000, POS_RIGHT);
 }
 
+// /ind?led=x
+// /row?speed=xxxx&pos=1
+// /col?speed=xxxx&pos=1
+// /cic?speed=xxxx&len=x&dir=1
+// /swp?speed=xxxx
+// /arw?speed=xxxx&dir=1
 
 /* Setup Code */
 void setup()

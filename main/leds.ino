@@ -25,6 +25,18 @@ uint8_t seq_arr[] = {LED_1, LED_2, LED_3,
 // TODO current param of seq
 // TODO current speed
 
+void ydelay(unsigned long ms)
+{
+    uint32_t start = micros();
+
+    while (ms > 0) {
+        yield();
+        while ( ms > 0 && (micros() - start) >= 1000) {
+            ms--;
+            start += 1000;
+        }
+    }
+}
 
 /**
  * @brief Sets all LED pins to digital LOW
@@ -117,8 +129,8 @@ void seq_one_by_one(uint16_t speed)
 	{
 		set_led(seq_arr[i], ON);
 		delay(speed);
+    set_led(seq_arr[i], OFF);
 		i = (i+1)%TOTAL_LED;
-		set_led(seq_arr[i-1], OFF);
 	}
 }
 
@@ -143,7 +155,7 @@ void seq_row(uint16_t speed, uint8_t pos)
 		set_led(seq_arr[start_pos-1], OFF);
 		set_led(seq_arr[start_pos], OFF);
 		set_led(seq_arr[start_pos+1], OFF);
-		switch(pos)
+		switch(start_pos)     // TODO
 		{
 		case POS_TOP:
 			pos = POS_BOTTOM;		/* setting next position */
@@ -176,31 +188,35 @@ void seq_row(uint16_t speed, uint8_t pos)
  */
 void seq_col(uint16_t speed, uint8_t pos)
 {
-	/* TODO local in loop() sufficient? */			
+	/* TODO local in loop() sufficient? 			
 	uint8_t seq_arr[] = {LED_1, LED_2, LED_3, 
 						 LED_4, LED_5, LED_6, 
-						 LED_7, LED_8, LED_9};
+						 LED_7, LED_8, LED_9}; */
+
+  uint8_t wseq_arr[] = { LED_1,  LED_4, LED_7, // TODO
+                        LED_2, LED_5, LED_8, 
+                        LED_3, LED_6, LED_9};
 
 	change_seq(SEQ_COL);		/* change current sequence */
 	
 	uint8_t start_pos = pos;
 	while(42)
 	{
-		set_led(seq_arr[start_pos-1], ON);
-		set_led(seq_arr[start_pos], ON);
-		set_led(seq_arr[start_pos+1], ON);
+		set_led(wseq_arr[start_pos-1], ON);
+		set_led(wseq_arr[start_pos], ON);
+		set_led(wseq_arr[start_pos+1], ON);
 		delay(speed);
-		set_led(seq_arr[start_pos-1], OFF);
-		set_led(seq_arr[start_pos], OFF);
-		set_led(seq_arr[start_pos+1], OFF);
-		switch(pos)
+		set_led(wseq_arr[start_pos-1], OFF);
+		set_led(wseq_arr[start_pos], OFF);
+		set_led(wseq_arr[start_pos+1], OFF);
+		switch(start_pos)
 		{
-		case POS_LEFT:
-			pos = POS_RIGHT;		/* setting next position */
-			break;
-		case POS_RIGHT:
-			pos = POS_LEFT;
-			break;
+    case POS_TOP:
+      pos = POS_BOTTOM;   /* setting next position */
+      break;
+    case POS_BOTTOM:
+      pos = POS_TOP;
+      break;
 		}
 		set_led(LED_2, ON);
 		set_led(LED_5, ON);
@@ -209,13 +225,13 @@ void seq_col(uint16_t speed, uint8_t pos)
 		set_led(LED_2, OFF);
 		set_led(LED_5, OFF);
 		set_led(LED_8, OFF);	
-		set_led(seq_arr[pos-1], ON);
-		set_led(seq_arr[pos], ON);
-		set_led(seq_arr[pos+1], ON);	
+		set_led(wseq_arr[pos-1], ON);
+		set_led(wseq_arr[pos], ON);
+		set_led(wseq_arr[pos+1], ON);	
 		delay(speed);	
-		set_led(seq_arr[pos-1], OFF);
-		set_led(seq_arr[pos], OFF);
-		set_led(seq_arr[pos+1], OFF);	
+		set_led(wseq_arr[pos-1], OFF);
+		set_led(wseq_arr[pos], OFF);
+		set_led(wseq_arr[pos+1], OFF);	
 	}
 }
 
@@ -230,8 +246,8 @@ void seq_circle(uint16_t speed, uint8_t led_len, uint8_t direct)
   (void)direct;
 	change_seq(SEQ_CIRC);
 	uint8_t cseq_arr[] = {LED_1, LED_2, LED_3, 
-					 	  LED_4,		LED_6, 
-						  LED_7, LED_8, LED_9};
+					 	            LED_6,		LED_9, 
+						            LED_8, LED_7, LED_4};
 	int8_t i = 0;		/* Current Led */
 	int8_t y = 0;
 	while(42)
