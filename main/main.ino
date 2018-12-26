@@ -64,7 +64,7 @@ void send_file(const char *fn, const char *c_type)
 
 	File f = SPIFFS.open(f_name, "r");    /* FS to open a file */
 	if (!f) {
-		Serial.printf("File: \"%s\" could not be opened.\n", f_name);
+		Serial.printf("File: \"%s\" could not be opened.\n", f_name.begin());
 		return;
 	}
 
@@ -187,9 +187,6 @@ void setup()
 	Serial.print("Soft-AP IP Address: ");
 	Serial.println(WiFi.softAPIP());		
 	Serial.println("-----------------");
-
-	str_buff.reserve(BUFF_SIZE);
-  Serial.printf("LEN: %u\n", str_buff.length());
 
 	/* Configuring web server */
 	wserver.on("/", handle_root);
