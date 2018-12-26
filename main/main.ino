@@ -113,6 +113,7 @@ void handle_app_js()
  */
 void handle_not_found()
 {
+  /*
 	String msg = "<h1>Not Found</h1>";
 	msg += wserver.uri();
 	msg += "Arguments: ";
@@ -123,24 +124,26 @@ void handle_not_found()
 		msg += " " + wserver.argName(i)	+ ": " + wserver.arg(i) + "\n";
 	}
 
-	wserver.send(404, "text/html", msg);
+	wserver.send(404, "text/html", msg); */
+  handle_root();
 
 	String req = wserver.uri();		/* Request */
 
 	if (req.indexOf("/ind") != -1)	/* TODO SERVER ON */
 	{
 		if (wserver.args() < 2)	{ return; }
-		seq_individual((wserver.arg(0)).toInt, (wserver.arg(1)).toInt);
+    // /ind?led=x&state=1
+		seq_individual((wserver.arg(0)).toInt(), (wserver.arg(1)).toInt());
 		change_seq(SEQ_INDIV);	/* No function call will be done */
 	}
-	else if (req.indexOf("/one"))
+	else if (req.indexOf("/one") != -1)
 	{
 		if (wserver.args() < 1)	{ return; }
 		cur_speed = (wserver.arg(0)).toInt();
 		change_seq(SEQ_ONE);
 	
 	}
-	else if (req.indexOf("/row"))
+	else if (req.indexOf("/row") != -1)
 	{
 		if (wserver.args() < 2)	{ return; }
 		cur_speed = (wserver.arg(0)).toInt();
@@ -148,14 +151,14 @@ void handle_not_found()
 		change_seq(SEQ_ROW);
 	
 	}
-	else if (req.indexOf("/col"))
+	else if (req.indexOf("/col") != -1)
 	{
 		if (wserver.args() < 2)	{ return; }	
 		cur_speed = (wserver.arg(0)).toInt();
 		cur_pos = (wserver.arg(1)).toInt();
 		change_seq(SEQ_COL);
 	}
-	else if (req.indexOf("/cir"))
+	else if (req.indexOf("/cir") != -1)
 	{
 		if (wserver.args() < 3)	{ return; }
 		cur_speed = (wserver.arg(0)).toInt();
@@ -163,13 +166,13 @@ void handle_not_found()
 		cur_direct = (wserver.arg(2)).toInt();
 		change_seq(SEQ_CIRC);
 	}
-	else if (req.indexOf("/swp"))
+	else if (req.indexOf("/swp") != -1)
 	{
 		if (wserver.args() < 1)	{ return; }
 		cur_speed = (wserver.arg(0)).toInt();
 		change_seq(SEQ_SWAP);
 	}
-	else if (req.indexOf("/arw"))	
+	else if (req.indexOf("/arw") != -1)	
 	{
 		if (wserver.args() < 2)	{ return; }
 		cur_speed = (wserver.arg(0)).toInt();
@@ -180,7 +183,7 @@ void handle_not_found()
 		return;
 
 	if (cur_speed < 100 || cur_speed > 3000) {
-		speed = 1000;			/* Back to default */
+		cur_speed = 1000;			/* Back to default */
 	}
 	if (cur_pos != POS_TOP && cur_pos != POS_LEFT && 
 		cur_pos != POS_RIGHT && cur_pos != POS_BOTTOM) {
@@ -210,7 +213,7 @@ void handle_not_found()
 // /one?speed=xxxx
 // /row?speed=xxxx&pos=1
 // /col?speed=xxxx&pos=1
-// /cic?speed=xxxx&len=x&dir=1
+// /cir?speed=xxxx&len=x&dir=1
 // /swp?speed=xxxx
 // /arw?speed=xxxx&dir=1
 

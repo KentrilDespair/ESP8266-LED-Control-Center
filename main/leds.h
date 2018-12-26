@@ -22,12 +22,12 @@ void cur_seq_continue();
 
 /* Single sequences */
 /* TODO CHANGE HEADERS HAVE GLOBALS ! */
-void seq_individual(uint8_t led, uint8_t state);
-void seq_one_by_one(uint16_t speed);
-void seq_row(uint16_t speed, uint8_t pos);
-void seq_col(uint16_t speed, uint8_t pos);
-void seq_circle(uint16_t speed, uint8_t led_len, uint8_t direct);
-void seq_swap(uint16_t speed);
-void seq_arrow(uint16_t speed, uint8_t direct);
+void seq_individual(int8_t led, int8_t state);
+void seq_one_by_one();
+void seq_row(uint8_t pos);
+void seq_col(uint8_t pos);
+void seq_circle(uint8_t led_len, uint8_t direct);
+void seq_swap();
+void seq_arrow(uint8_t direct);
 
 #endif
