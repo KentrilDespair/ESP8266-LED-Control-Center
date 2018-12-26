@@ -73,16 +73,6 @@ void handle_root()
 	size_t sent = wserver.streamFile(f, "text/html");
 	(void)sent;
 	f.close();
-
-	digitalWrite(LED_1, HIGH);
-	digitalWrite(LED_2, HIGH);
-	digitalWrite(LED_3, HIGH);
-	digitalWrite(LED_4, HIGH);
-	digitalWrite(LED_5, HIGH);
-	digitalWrite(LED_6, HIGH);
-	digitalWrite(LED_7, HIGH);
-	digitalWrite(LED_8, HIGH);
-	digitalWrite(LED_9, HIGH);
 }
 
 /**
@@ -98,29 +88,33 @@ void handle_fcss()
 	}
 
 	wserver.setContentLength(f.size()); /* Chunked */
-	uint32_t B_pos;						/* xth byte in file */
+	uint32_t B_pos;						    /* xth byte in file */
 	bool first_part = true;				/* First part needs to be sent */
 	
 	while(f.available()) 
 	{
 		B_pos = 0;
-		str_buff[0] = '\0';					/* "Clears" the string */
-		if (f.size() < BUFF_SIZE-2)			/* Last chunk */
+    str_buff = "";  /* Clears the string, stupid, I know */   
+		if (f.size() - f.position() < BUFF_SIZE-1)	{		/* Last chunk */
+	    Serial.println("Going to send last chunk");
 			break;
-
-		while (B_pos < BUFF_SIZE-1) {
+		}
+		while (B_pos < BUFF_SIZE) {
 			str_buff += char(f.read());	
 			B_pos++;
 		}
-
+   
 		if (first_part)	
 		{
-			wserver.send(200, "text/html", str_buff);
+      Serial.println("Sending first chunk");
+      wserver.sendHeader("Content-Encoding", "gzip");
+			wserver.send(200, "text/css", str_buff);
 			first_part = false;
 			continue;
 		}
 		wserver.sendContent(str_buff);
 	}
+ 
 
 	while(f.available()) {
     	str_buff += char(f.read());  
@@ -135,15 +129,50 @@ void handle_fcss()
 void handle_fjs()
 {
 	Serial.println("-> \"framework7.min.js\" requested");
-	/*
-	File f = SPIFFS.open("/framework7.min.js", "r");
+	File f = SPIFFS.open("/framework7.min.js.gz", "r");
 	if (!f) {
 		Serial.println("File: \"framework7.min.js\" could not be opened.");
 		return;
 	}
-	size_t sent = wserver.streamFile(f, "application/javascript");
-  (void)sent;
-	f.close();  */
+
+  wserver.setContentLength(f.size()); /* Chunked */
+  uint32_t B_pos;           /* xth byte in file */
+  bool first_part = true;       /* First part needs to be sent */
+  
+  while(f.available()) 
+  {
+    B_pos = 0;
+    str_buff = "";  /* Clears the string */    
+    Serial.printf("Pos of f: %u\n", f.position());
+    if (f.size() - f.position() < BUFF_SIZE-1) {   /* Last chunk */
+      Serial.println("Going to send last chunk");
+      break;
+    }
+    while (B_pos < BUFF_SIZE) {
+      str_buff += char(f.read()); 
+      B_pos++;
+    }
+
+    Serial.printf("String len: %u\n", str_buff.length());
+    if (first_part) 
+    {
+      Serial.println("Sending first chunk");
+      wserver.sendHeader("Content-Encoding", "gzip");
+      wserver.send(200, "application/javascript", str_buff);
+      first_part = false;
+      continue;
+    }
+    wserver.sendContent(str_buff);
+  }
+
+  while(f.available()) {
+      str_buff += char(f.read());
+  }
+
+  Serial.printf("String len: %u\n", str_buff.length());
+  wserver.sendContent(str_buff);
+
+	f.close();
 }
 
 /**
@@ -152,7 +181,6 @@ void handle_fjs()
 void handle_app_js()
 {
 	Serial.println("-> \"my_app.js\" requested");  
-	/*
 	File f = SPIFFS.open("/my_app.js", "r");
 	if (!f) {
 		Serial.println("File: \"my_app.js\" could not be opened.");
@@ -160,7 +188,7 @@ void handle_app_js()
 	}
 	size_t sent = wserver.streamFile(f, "application/javascript");
 	(void)sent;
-	f.close(); */
+	f.close();
 }
 
 /**
@@ -182,6 +210,8 @@ void setup()
 	Serial.println();
 	delay(10);
 	get_diag_info();
+
+/*  Serial.printf("FORMATTING: %s\n", SPIFFS.format() ? "true" : "false"); */
 
 	/* SPIFFS configuration */
 	Serial.println("Starting SPIFFS ..."); 
@@ -218,6 +248,7 @@ void setup()
 	Serial.println("-----------------");
 
 	str_buff.reserve(BUFF_SIZE);
+  Serial.printf("LEN: %u\n", str_buff.length());
 
 	/* Configuring web server */
 	wserver.on("/", handle_root);
