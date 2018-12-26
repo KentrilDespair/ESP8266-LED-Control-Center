@@ -60,7 +60,7 @@ void send_file(const char *fn, const char *c_type)
 	f_name += ".gz";							/* GZIP compressed file */
 	Serial.printf("-> \"%s\" requested\n", fn);
 
-	// TODO if EXISTS!! & server accpets!
+	// TODO if EXISTS GZIP!! & server accpets!
 
 	File f = SPIFFS.open(f_name, "r");    /* FS to open a file */
 	if (!f) {
@@ -82,20 +82,11 @@ void handle_root()
 }
 
 /**
- * @brief Handles framework CSS TODO ONE COMMON BREAK UP FUNCTION
+ * @brief Handles framework CSS
  */
 void handle_fcss()
 {
-	Serial.println("-> \"framework7.min.css\" requested");  
-	File f = SPIFFS.open("/framework7.min.css.gz", "r");
-	if (!f) {
-		Serial.println("File: \"framework7.min.css\" could not be opened.");
-		return;
-	}
-  size_t sent = wserver.streamFile(f, "text/css");
-  (void)sent;
-
-	f.close();
+	send_file("/framework7.min.css", "text/css");
 }
 
 /**
@@ -103,17 +94,7 @@ void handle_fcss()
  */
 void handle_fjs()
 {
-	Serial.println("-> \"framework7.min.js\" requested");
-	File f = SPIFFS.open("/framework7.min.js.gz", "r");
-	if (!f) {
-		Serial.println("File: \"framework7.min.js\" could not be opened.");
-		return;
-	}
-
-  size_t sent = wserver.streamFile(f, "application/javascript");
-  (void)sent;
-
-	f.close();
+	send_file("/framework7.min.js", "application/javascript");
 }
 
 /**
@@ -121,15 +102,7 @@ void handle_fjs()
  */
 void handle_app_js()
 {
-	Serial.println("-> \"my_app.js\" requested");  
-	File f = SPIFFS.open("/my_app.js", "r");
-	if (!f) {
-		Serial.println("File: \"my_app.js\" could not be opened.");
-		return;
-	}
-	size_t sent = wserver.streamFile(f, "application/javascript");
-	(void)sent;
-	f.close();
+	send_file("/my_app.js", "application/javascript");
 }
 
 /**
