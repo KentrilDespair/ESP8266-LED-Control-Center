@@ -17,7 +17,7 @@
 
 
 ESP8266WebServer wserver(80);
-String str_buff;					/* Globally accessible buffer*/
+String str_buff;					/* Globally accessible buffer */
 
 // WiFiServer.hasClient()
 // WiFiServer.available(byte *status);
@@ -32,6 +32,7 @@ void get_diag_info()
 	Serial.printf("Free sketch size: %u\n", ESP.getFreeSketchSpace());
 	Serial.printf("Flash chip size: %u\n", ESP.getFlashChipSize());
 	Serial.printf("Flash real chip size: %u\n", ESP.getFlashChipRealSize());
+	Serial.printf("Free Heap size: %u\n", ESP.getFreeHeap());
 }
 
 /**
@@ -60,17 +61,8 @@ void handle_root()
 		Serial.println("File: \"index.html\" could not be opened.");
 		return;
 	}
-  Serial.printf("Reserving: %u\n", f.size());
 
-/*  String buff;
-  buff.reserve(f.size()+1);
-  while (f.available()) {
-    buff += char(f.read());  
-  }
-  Serial.println("Now sending ... ");
-  wserver.send(200, "text/html", buff); */
-  
-	size_t sent = wserver.streamFile(f, "text/html");
+	size_t sent = wserver.streamFile(f, "text/html");	/* Has less size */
 	(void)sent;
 	f.close();
 }
@@ -88,15 +80,16 @@ void handle_fcss()
 	}
 
 	wserver.setContentLength(f.size()); /* Chunked */
-	uint32_t B_pos;						    /* xth byte in file */
+	uint32_t B_pos;					    /* xth byte in file */
 	bool first_part = true;				/* First part needs to be sent */
 	
 	while(f.available()) 
 	{
 		B_pos = 0;
-    str_buff = "";  /* Clears the string, stupid, I know */   
+		str_buff = "";  /* Clears the string, stupid, I know */   
+
 		if (f.size() - f.position() < BUFF_SIZE-1)	{		/* Last chunk */
-	    Serial.println("Going to send last chunk");
+			Serial.println("Going to send last chunk");
 			break;
 		}
 		while (B_pos < BUFF_SIZE) {
@@ -134,6 +127,8 @@ void handle_fjs()
 		Serial.println("File: \"framework7.min.js\" could not be opened.");
 		return;
 	}
+
+	Serial.printf("Free Heap size: %u\n", ESP.getFreeHeap());
 
   wserver.setContentLength(f.size()); /* Chunked */
   uint32_t B_pos;           /* xth byte in file */
