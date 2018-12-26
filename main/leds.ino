@@ -12,7 +12,7 @@
 /* Global declarations */
 extern uint8_t cur_seq;		/* current sequence TODO in HEADER?? */
 extern uint8_t LED_cnt;		/* Auxilliary LED counter */
-extern uint8_t cur_speed;	/* Current speed */
+extern uint16_t cur_speed;	/* Current speed */
 extern uint8_t cur_pos;		/* Current position */
 extern uint8_t cur_len;		/* Current Number of LEDs */
 extern uint8_t cur_direct;	/* Current direction */
@@ -85,7 +85,7 @@ void cur_seq_continue()
 		seq_row(cur_speed, cur_pos);
 		break;
 	case SEQ_CIRC:
-		seq_circle(cur_speed, cur_len, cur_direct)
+		seq_circle(cur_speed, cur_len, cur_direct);
 		break;
 	case SEQ_SWAP:
 		seq_swap(cur_speed);
@@ -109,7 +109,7 @@ void seq_individual(uint8_t led_pin, bool state)
  * @brief One by one LED (sweep)
  * @param speed Switching speed 3000 - 100
  */
-void seq_one_by_one(uint8_t speed)
+void seq_one_by_one(uint16_t speed)
 {
 	change_seq(SEQ_ONE);		/* change current sequence */
 	uint8_t i = 0;
@@ -127,7 +127,7 @@ void seq_one_by_one(uint8_t speed)
  * @param speed Switching speed
  * @param pos Starting position
  */
-void seq_row(uint8_t speed, uint8_t pos)
+void seq_row(uint16_t speed, uint8_t pos)
 {
 	/* TODO local in loop() sufficient? */	
 			
@@ -174,7 +174,7 @@ void seq_row(uint8_t speed, uint8_t pos)
  * @param speed Switching speed
  * @param pos Starting position
  */
-void seq_col(uint8_t speed, uint8_t pos)
+void seq_col(uint16_t speed, uint8_t pos)
 {
 	/* TODO local in loop() sufficient? */			
 	uint8_t seq_arr[] = {LED_1, LED_2, LED_3, 
@@ -225,7 +225,7 @@ void seq_col(uint8_t speed, uint8_t pos)
  * @param led_len Total LEDs switch at once 9 - 1
  * @param direct Direction - clockwise / Anticlockwise
  */
-void seq_circle(uint8_t speed, uint8_t led_len, uint8_t direct)
+void seq_circle(uint16_t speed, uint8_t led_len, uint8_t direct)
 {
   (void)direct;
 	change_seq(SEQ_CIRC);
@@ -257,7 +257,7 @@ void seq_circle(uint8_t speed, uint8_t led_len, uint8_t direct)
  * @brief 
  * @param speed Speed of switching, 3000 - 100
  */
-void seq_swap(uint8_t speed)
+void seq_swap(uint16_t speed)
 {
 	change_seq(SEQ_SWAP);
 	while(42)				// TODO switch
@@ -294,7 +294,7 @@ void seq_swap(uint8_t speed)
  * @param speed Speed of switching, 3000 - 100
  * @param direct Direction from which it starts
  */
-void seq_arrow(uint8_t speed, uint8_t direct)
+void seq_arrow(uint16_t speed, uint8_t direct)
 {	
 	change_seq(SEQ_ARROW);
 	switch(direct)

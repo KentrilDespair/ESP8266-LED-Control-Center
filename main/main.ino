@@ -16,6 +16,9 @@
 #include <ESP8266WebServer.h>
 
 /* TODO Global Variables */
+/* WiFi AP credentials */
+static const char *ssid = "LED CC";
+static const char *pass = "ledcontrolcenter";
 ESP8266WebServer wserver(80);       /* Web server */
 
 
@@ -124,7 +127,7 @@ void handle_not_found()
 	seq_col(1000, POS_LEFT);
 	seq_circle(1000, 1, CLKW);
 	seq_swap(1000);
-	seq_arrow(1000, CLKW):
+	seq_arrow(1000, CLKW);
 }
 
 

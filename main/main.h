@@ -8,15 +8,13 @@
  * Version: 1.0
  */
 
-
-/* WiFi AP credentials */
-const char *ssid = "LED CC";
-const char *pass = "ledcontrolcenter";
+#ifndef MAIN_H
+#define MAIN_H
 
 /* LED Global variables */
 uint8_t cur_seq;		/* current sequence TODO in HEADER?? */
 uint8_t LED_cnt;		/* Auxilliary LED counter */
-uint8_t cur_speed;	/* Current speed */
+uint16_t cur_speed;	/* Current speed */
 uint8_t cur_pos;		/* Current position */
 uint8_t cur_len;		/* Current Number of LEDs */
 uint8_t cur_direct;	/* Current direction */
@@ -32,4 +30,4 @@ void handle_fcss();
 void handle_fjs();
 void handle_app_js();
 
-
+#endif

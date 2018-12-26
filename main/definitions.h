@@ -7,7 +7,8 @@
  * Version: 1.0
  */
 
-
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
 
 /* GPIO Pin definitions */
 #define PIN_D0 16
@@ -57,3 +58,4 @@
 #define CLKW 97			/* Clockwise 		*/
 #define ACLKW 98		/* Anticlockwise 	*/
 
+#endif
