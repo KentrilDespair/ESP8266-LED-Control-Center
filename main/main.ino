@@ -18,6 +18,7 @@
 
 ESP8266WebServer wserver(80);
 String str_buff;					/* Globally accessible buffer */
+char buff[BUFF_SIZE+1];				/* Auxiliary buffer */
 
 // WiFiServer.hasClient()
 // WiFiServer.available(byte *status);
@@ -128,18 +129,18 @@ void handle_fjs()
 		return;
 	}
 
-	Serial.printf("Free Heap size: %u\n", ESP.getFreeHeap());
-
+	// 38000 B of free heap
   wserver.setContentLength(f.size()); /* Chunked */
   uint32_t B_pos;           /* xth byte in file */
   bool first_part = true;       /* First part needs to be sent */
   
+  /*
   while(f.available()) 
   {
     B_pos = 0;
-    str_buff = "";  /* Clears the string */    
+    str_buff = "";  Clears the string    
     Serial.printf("Pos of f: %u\n", f.position());
-    if (f.size() - f.position() < BUFF_SIZE-1) {   /* Last chunk */
+    if (f.size() - f.position() < BUFF_SIZE-1) {   Last chunk 
       Serial.println("Going to send last chunk");
       break;
     }
@@ -163,9 +164,24 @@ void handle_fjs()
   while(f.available()) {
       str_buff += char(f.read());
   }
+  */
+  
+	while(readBytes(&buff, BUFF_SIZE))
+	{
+		str_buff = buff;			/* Copy to string */
+  		Serial.printf("String len: %u\n", str_buff.length());
 
-  Serial.printf("String len: %u\n", str_buff.length());
-  wserver.sendContent(str_buff);
+		if (first_part)
+		{
+			Serial.println("Sending first chunk");
+			wserver.sendHeader("Content-Encoding", "gzip");
+			wserver.send(200, "application/javascript", str_buff);
+			first_part = false;
+			continue;
+		}
+
+  		wserver.sendContent(str_buff);
+	}
 
 	f.close();
 }
@@ -243,7 +259,7 @@ void setup()
 	Serial.println("-----------------");
 
 	str_buff.reserve(BUFF_SIZE);
-  Serial.printf("LEN: %u\n", str_buff.length());
+	memset(buff, 0, sizeof(buff));
 
 	/* Configuring web server */
 	wserver.on("/", handle_root);
