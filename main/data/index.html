@@ -17,7 +17,6 @@
 </div>
 </div>
 <div class=page-content>
-<div class=block-title>List of LED controls options</div>
 <div class="list accordion-list">
 <ul>
 <li class=accordion-item><a href=# class="item-content item-link">
@@ -25,53 +24,65 @@
 <div class=item-title>Individual LEDs</div>
 </div></a>
 <div class="accordion-item-content text-align-center">
+<div class=block>
+<div class="list simple-list">
+<ul><li><span>Active</span>
+<label class="toggle toggle-init color-blue">
+<input type=checkbox>
+<span class=toggle-icon></span>
+</label></li><br>
 <label class=checkbox>
 <input type=checkbox>
 <i class=icon-checkbox></i>
-</label>
-<label class=checkbox>
+</label> <label class=checkbox>
 <input type=checkbox>
 <i class=icon-checkbox></i>
-</label>
-<label class=checkbox>
-<input type=checkbox>
-<i class=icon-checkbox></i>
-</label><br>
-<label class=checkbox>
-<input type=checkbox>
-<i class=icon-checkbox></i>
-</label>
-<label class=checkbox>
-<input type=checkbox>
-<i class=icon-checkbox></i>
-</label>
-<label class=checkbox>
+</label> <label class=checkbox>
 <input type=checkbox>
 <i class=icon-checkbox></i>
 </label><br>
 <label class=checkbox>
 <input type=checkbox>
 <i class=icon-checkbox></i>
-</label>
+</label> <label class=checkbox>
+<input type=checkbox>
+<i class=icon-checkbox></i>
+</label> <label class=checkbox>
+<input type=checkbox>
+<i class=icon-checkbox></i>
+</label><br>
 <label class=checkbox>
 <input type=checkbox>
 <i class=icon-checkbox></i>
-</label>
-<label class=checkbox>
+</label> <label class=checkbox>
+<input type=checkbox>
+<i class=icon-checkbox></i>
+</label> <label class=checkbox>
 <input type=checkbox>
 <i class=icon-checkbox></i>
 </label>
+</ul>
+</div>
+</div>
 </div>
 </li>
 <li class=accordion-item><a href=# class="item-content item-link">
 <div class=item-inner>
 <div class=item-title>One by One (Sweep)</div>
-</div></a>
+</div>
+</a>
 <div class=accordion-item-content>
 <div class=block>
-<div class=block-title>Speed</div>
 <div class="list simple-list">
 <ul>
+<li>
+<span>Active</span>
+<label class="toggle toggle-init color-blue">
+<input type=checkbox>
+<span class=toggle-icon></span>
+</label>
+</li>
+<div class=block-title>Speed</div>
 <li>
 <div class="item-cell width-auto flex-shrink-0">Slow</div>
 <div class="item-cell flex-shrink-3">
@@ -92,9 +103,16 @@
 </div></a>
 <div class=accordion-item-content>
 <div class=block>
-<div class=block-title>Speed</div>
 <div class="list simple-list">
 <ul>
+<li>
+<span>Active</span>
+<label class="toggle toggle-init color-blue">
+<input type=checkbox>
+<span class=toggle-icon></span>
+</label>
+</li>
+<div class=block-title>Speed</div>
 <li>
 <div class="item-cell width-auto flex-shrink-0">Slow</div>
 <div class="item-cell flex-shrink-3">
@@ -111,7 +129,7 @@
 <ul>
 <li>
 <label class="item-radio item-content">
-<input type=radio name=demo-radio value=Books checked />
+<input type=radio name=row_dir value=1 checked/>
 <i class="icon icon-radio"></i>
 <div class=item-inner>
 <div class=item-title>Top to Bottom</div>
@@ -119,7 +137,7 @@
 </label>
 </li><li>
 <label class="item-radio item-content">
-<input type=radio name=demo-radio value="Movies"/>
+<input type=radio name=row_dir value="7"/>
 <i class="icon icon-radio"></i>
 <div class=item-inner>
 <div class=item-title>Bottom to Top</div>
@@ -137,9 +155,16 @@
 </div></a>
 <div class=accordion-item-content>
 <div class=block>
-<div class=block-title>Speed</div>
 <div class="list simple-list">
 <ul>
+<li>
+<span>Active</span>
+<label class="toggle toggle-init color-blue">
+<input type=checkbox>
+<span class=toggle-icon></span>
+</label>
+</li>
+<div class=block-title>Speed</div>
 <li>
 <div class="item-cell width-auto flex-shrink-0">Slow</div>
 <div class="item-cell flex-shrink-3">
@@ -156,7 +181,7 @@
 <ul>
 <li>
 <label class="item-radio item-content">
-<input type=radio name=demo-radio value=Books checked/>
+<input type=radio name=col_dir value=3 checked/>
 <i class="icon icon-radio"></i>
 <div class=item-inner>
 <div class=item-title>Left to Right</div>
@@ -164,7 +189,7 @@
 </label>
 </li><li>
 <label class="item-radio item-content">
-<input type=radio name=demo-radio value="Movies"/>
+<input type=radio name=col_dir value="5"/>
 <i class="icon icon-radio"></i>
 <div class=item-inner>
 <div class=item-title>Right to Left</div>
@@ -182,9 +207,16 @@
 </div></a>
 <div class=accordion-item-content>
 <div class=block>
-<div class=block-title>Speed</div>
 <div class="list simple-list">
 <ul>
+<li>
+<span>Active</span>
+<label class="toggle toggle-init color-blue">
+<input type=checkbox>
+<span class=toggle-icon></span>
+</label>
+</li>
+<div class=block-title>Speed</div>
 <li>
 <div class="item-cell width-auto flex-shrink-0">Slow</div>
 <div class="item-cell flex-shrink-3">
@@ -201,18 +233,18 @@
 <ul>
 <li>
 <label class="item-radio item-content">
-<input type=radio name=demo-radio value=Books checked />
+<input type=radio name=cir_dir value=97 checked />
 <i class="icon icon-radio"></i>
 <div class=item-inner>
-<div class=item-title>Left to Right</div>
+<div class=item-title>Clockwise</div>
 </div>
 </label>
 </li><li>
 <label class="item-radio item-content">
-<input type=radio name=demo-radio value="Movies"/>
+<input type=radio name=cir_dir value="98"/>
 <i class="icon icon-radio"></i>
 <div class=item-inner>
-<div class=item-title>Right to Left</div>
+<div class=item-title>Anticlockwise</div>
 </div>
 </label>
 </li>
@@ -241,7 +273,27 @@
 </div></a>
 <div class=accordion-item-content>
 <div class=block>
-<p>Item 2 content. Lorem ipsum dolor sit amet...</p>
+<div class="list simple-list">
+<ul>
+<li>
+<span>Active</span>
+<label class="toggle toggle-init color-blue">
+<input type=checkbox>
+<span class=toggle-icon></span>
+</label>
+</li>
+<div class=block-title>Speed</div>
+<li>
+<div class="item-cell width-auto flex-shrink-0">Slow</div>
+<div class="item-cell flex-shrink-3">
+<div class="range-slider range-slider-init color-orange" data-label=true>
+<input type=range min=100 max=3000 step=100 value=1000>
+</div>
+</div>
+<div class="item-cell width-auto flex-shrink-0">Fast</div>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </li>
@@ -251,7 +303,65 @@
 </div></a>
 <div class=accordion-item-content>
 <div class=block>
-<p>Item 2 content. Lorem ipsum dolor sit amet...</p>
+<div class="list simple-list">
+<ul>
+<li>
+<span>Active</span>
+<label class="toggle toggle-init color-blue">
+<input type=checkbox>
+<span class=toggle-icon></span>
+</label>
+</li>
+<div class=block-title>Speed</div>
+<li>
+<div class="item-cell width-auto flex-shrink-0">Slow</div>
+<div class="item-cell flex-shrink-3">
+<div class="range-slider range-slider-init color-orange" data-label=true>
+<input type=range min=100 max=3000 step=100 value=1000>
+</div>
+</div>
+<div class="item-cell width-auto flex-shrink-0">Fast</div>
+</li>
+</ul>
+</div>
+<div class=block-title>Direction</div>
+<div class=list>
+<ul>
+<li>
+<label class="item-radio item-content">
+<input type=radio name=arw_dir value=1 checked />
+<i class="icon icon-radio"></i>
+<div class=item-inner>
+<div class=item-title>Top to Bottom</div>
+</div>
+</label>
+</li><li>
+<label class="item-radio item-content">
+<input type=radio name=arw_dir value="7"/>
+<i class="icon icon-radio"></i>
+<div class=item-inner>
+<div class=item-title>Bottom to Top</div>
+</div>
+</label>
+</li><li>
+<label class="item-radio item-content">
+<input type=radio name=arw_dir value="3"/>
+<i class="icon icon-radio"></i>
+<div class=item-inner>
+<div class=item-title>Left to Right</div>
+</div>
+</label>
+</li><li>
+<label class="item-radio item-content">
+<input type=radio name=arw_dir value="5"/>
+<i class="icon icon-radio"></i>
+<div class=item-inner>
+<div class=item-title>Right to Left</div>
+</div>
+</label>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </li>
