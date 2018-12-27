@@ -12,15 +12,11 @@
 #define MAIN_H
 
 /* LED Global variables */
-uint8_t cur_seq;		/* current sequence TODO in HEADER?? */
-uint8_t LED_cnt;		/* Auxilliary LED counter */
-uint16_t cur_speed;	/* Current speed */
+uint8_t cur_seq;		/* Current sequence */
+uint16_t cur_speed;		/* Current speed */
 uint8_t cur_pos;		/* Current position */
 uint8_t cur_len;		/* Current Number of LEDs */
-uint8_t cur_direct;	/* Current direction */
-
-//uint32_t start_timer;
-uint32_t end_timer;
+uint8_t cur_direct;		/* Current direction */
 
 void get_diag_info();
 void new_cli();

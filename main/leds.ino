@@ -11,34 +11,22 @@
 
 /* Global declarations */
 extern uint8_t cur_seq;		/* current sequence TODO in HEADER?? */
-extern uint8_t LED_cnt;		/* Auxilliary LED counter */
 extern uint16_t cur_speed;	/* Current speed */
 extern uint8_t cur_pos;		/* Current position */
 extern uint8_t cur_len;		/* Current Number of LEDs */
 extern uint8_t cur_direct;	/* Current direction */
 
-uint8_t cur_state;
-uint8_t last_len;
-uint8_t seq_arr[] = {LED_1, LED_2, LED_3, 
-					 LED_4, LED_5, LED_6, 
-					 LED_7, LED_8, LED_9};
+
+static uint8_t cur_state;	/* Current state of sequence */
+static uint8_t LED_cnt;		/* Auxilliary LED counter */
+static uint8_t last_len;	
+static uint8_t seq_arr[] = {LED_1, LED_2, LED_3, 	/* Matix of LEDs */
+							LED_4, LED_5, LED_6, 
+							LED_7, LED_8, LED_9};
 
 // TODO array of current lit leds - bool? or BITS
 // TODO current param of seq
 // TODO current speed
-
-void ydelay(unsigned long ms)
-{
-    uint32_t start = micros();
-
-    while (ms > 0) {
-        yield();
-        while ( ms > 0 && (micros() - start) >= 1000) {
-            ms--;
-            start += 1000;
-        }
-    }
-}
 
 /**
  * @brief Sets all LED pins to digital LOW
@@ -67,27 +55,24 @@ inline void set_led(uint8_t led_pin, uint8_t state)
 }
 
 /**
- * @brief Performs LED reset and calls appropriate sequence function
- * TODO PARAMETERS
+ * @brief If current sequence changes, appropriate resets are made
  * @param seq_id Uniquely identifies an LED sequence
  */
 inline void change_seq(uint8_t seq_id)
 {
 	if (!seq_id) { return; }
 
-	if (cur_seq != seq_id)
+	if (cur_seq != seq_id)		/* New sequence */
 	{
 		led_reset();
 		cur_seq = seq_id;
-		cur_state = 0;
-		LED_cnt = 0;
-		last_len = 0;
+		cur_state = LED_cnt = last_len = 0;
 	}
 }
 
 /**
- * @brief TODO
- *
+ * @brief According to current sequence ID calls appropriate
+ *	sequence function
  */
 void cur_seq_continue()
 {
@@ -95,27 +80,27 @@ void cur_seq_continue()
 	{
 	/* case SEQ_INDIV: Is manual */
 	case SEQ_ONE:
-    Serial.println("Seq ONE");
+		Serial.println("Sequence ONE");
 		seq_one_by_one();
 		break;
 	case SEQ_ROW:
-     Serial.println("Seq ROW");
+		Serial.println("Sequence ROW");
 		seq_row(cur_pos);
 		break;
 	case SEQ_COL:
-     Serial.println("Seq COLUMN");
+		Serial.println("Sequence COLUMN");
 		seq_col(cur_pos);
 		break;
 	case SEQ_CIRC:
-      Serial.println("Seq CIRCLE");
+		Serial.println("Sequence CIRCLE");
 		seq_circle(cur_len, cur_direct);
 		break;
 	case SEQ_SWAP:
-      Serial.println("Seq SWAP");
+		Serial.println("Sequence SWAP");
 		seq_swap();
 		break;
 	case SEQ_ARROW:
-     Serial.println("Seq ARROW");
+		Serial.println("Sequence ARROW");
 		seq_arrow(cur_direct);
 		break;
 	}
@@ -128,37 +113,12 @@ void cur_seq_continue()
  */
 void seq_individual(int8_t led, int8_t state)
 {	
-	if (state > 1 || state < 0) { return; }
+	if (state > 1 || state < 0) { 
+		return;
+	}
 
-	switch(led)
-	{
-	case 1:
-		digitalWrite(LED_1, state);
-		break;
-	case 2:
-		digitalWrite(LED_2, state);
-		break;
-	case 3:
-		digitalWrite(LED_3, state);
-		break;
-	case 4:
-		digitalWrite(LED_4, state);
-		break;
-	case 5:
-		digitalWrite(LED_5, state);
-		break;
-	case 6:
-		digitalWrite(LED_6, state);
-		break;
-	case 7:
-		digitalWrite(LED_7, state);
-		break;
-	case 8:
-		digitalWrite(LED_8, state);
-		break;
-	case 9:
-		digitalWrite(LED_9, state);
-		break;
+	if (led > 0 && led < 10) {
+		set_led(seq_arr[led-1], state);
 	}
 }
 
@@ -177,8 +137,7 @@ void seq_one_by_one()
 	case 1:
     	set_led(seq_arr[LED_cnt], OFF);
 		LED_cnt = (LED_cnt+1)%TOTAL_LED;
-    set_led(seq_arr[LED_cnt], ON);
-    cur_state = 1; // needed?
+    	set_led(seq_arr[LED_cnt], ON);
 		break;
 	}
 }
@@ -190,7 +149,6 @@ void seq_one_by_one()
  */
 void seq_row(uint8_t pos)
 {
-	/* TODO local in loop() sufficient? */	
 	uint8_t start_pos = pos;
   
   switch(cur_state)
@@ -245,11 +203,6 @@ void seq_row(uint8_t pos)
  */
 void seq_col(uint8_t pos)
 {
-	/* TODO local in loop() sufficient? 			
-	uint8_t seq_arr[] = {LED_1, LED_2, LED_3, 
-						 LED_4, LED_5, LED_6, 
-						 LED_7, LED_8, LED_9}; */
-
   uint8_t wseq_arr[] = { LED_1,  LED_4, LED_7, // TODO
                         LED_2, LED_5, LED_8, 
                         LED_3, LED_6, LED_9};
@@ -309,27 +262,29 @@ void seq_col(uint8_t pos)
  */
 void seq_circle(uint8_t led_len, uint8_t direct)
 {
-  (void)direct;
+	(void)direct; /* TODO */
 	uint8_t cseq_arr[] = {LED_1, LED_2, LED_3, 
 						  LED_6,		LED_9, 
 						  LED_8, LED_7, LED_4};
 	int8_t i = LED_cnt;		/* Current Led */
-	int8_t y = LED_cnt;
+	int8_t y;
 	switch(cur_state)
 	{
 	case 0:
 		for (uint8_t num = 0; num < led_len; num++)
-		{	
+		{
 			set_led(cseq_arr[i], ON);
 			i = (i+1)%(TOTAL_LED-1);
 		}
-    LED_cnt = i;
+		LED_cnt = i;
 		cur_state = 1;
 		last_len = led_len;
 		break;
 	case 1:
-    y = i-1;
-    if (y < 0) { y = 7; }
+		y = i-1;
+		if (y < 0) { 
+			y = 7; 
+		}
 		for (uint8_t num = 0; num < last_len; num++)
 		{	
 			set_led(cseq_arr[y], OFF);

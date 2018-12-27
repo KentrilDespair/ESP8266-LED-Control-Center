@@ -15,7 +15,9 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 
-/* TODO Global Variables */
+/* Global Variables */
+static uint32_t del_timer;		/* Simulates delay, or speed */
+
 /* WiFi AP credentials */
 static const char *ssid = "LED CC";
 static const char *pass = "ledcontrolcenter";
@@ -198,7 +200,7 @@ void handle_not_found()
 		cur_direct = CLKW;
 	}
 
-	end_timer = millis() + cur_speed;
+	del_timer = millis() + cur_speed;
 	cur_seq_continue();
 
 	// seq_one_by_one(1000);
@@ -226,7 +228,7 @@ void setup()
 	delay(10);
 	get_diag_info();
 
-/*  Serial.printf("FORMATTING: %s\n", SPIFFS.format() ? "true" : "false"); */
+/*  Serial.printf("FORMATTING: %s\n", SPIFFS.format() ? "true" : "false");*/
 
 	/* SPIFFS configuration */
 	Serial.println("Starting SPIFFS ..."); 
@@ -276,12 +278,13 @@ void setup()
 
 
 /* Main Loop */
-void loop() {
+void loop() 
+{
 	wserver.handleClient();	
 
-	if (millis() >= end_timer)	
+	if (millis() >= del_timer)	/* After x milliseconds, calls sequence */
 	{
 		cur_seq_continue();
-		end_timer += cur_speed;
+		del_timer += cur_speed; /* Next "delay" */
 	}
 }
