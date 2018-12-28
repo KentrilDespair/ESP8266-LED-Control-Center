@@ -7,6 +7,7 @@
  * Version: 1.1	(+ Temp sensor)
  */
 
+/* #define SPIFFS_FORMAT */   /* TODO Uncomment to format */    
 
 #include "main.h"
 #include "definitions.h"     // TODO HEEADERS ONLY USED - VISIBLE
@@ -17,7 +18,10 @@
 
 /* Global Variables */
 static uint32_t del_timer;		/* Simulates delay, or speed */
+
+#ifdef TEMP_SENSOR
 static uint32_t temp_timer;		/* For temp readings */
+#endif
 
 /* WiFi AP credentials */
 static const char *ssid = "LED CC";
@@ -273,6 +277,7 @@ void handle_not_found()
 	wserver.send(404, "text/html", msg);
 }
 
+#ifdef TEMP_SENSOR
 /** @see https://learn.adafruit.com/tmp36-temperature-sensor/
 		using-a-temp-sensor */
 void get_temp() 
@@ -291,6 +296,7 @@ void get_temp()
 	//to degrees ((voltage - 500mV) times 100)
 	Serial.printf("Temps: %f C\n", temps);
 }
+#endif
 
 /* Setup Code */
 void setup()
@@ -301,7 +307,9 @@ void setup()
 	delay(10);
 	get_diag_info();
 
-/*  Serial.printf("FORMATTING: %s\n", SPIFFS.format() ? "true" : "false");*/
+#ifdef SPIFFS_FORMAT
+  Serial.printf("FORMATTING: %s\n", SPIFFS.format() ? "true" : "false");
+#endif
 
 	/* SPIFFS configuration */
 	Serial.println("Starting SPIFFS ..."); 
@@ -326,7 +334,9 @@ void setup()
 	led_reset();
 	cur_len = 1;		/* Max. number of LEDs ON */
 	del_timer = UINT_MAX;
+#ifdef TEMP_SENSOR
 	temp_timer = millis() + 1000;	
+#endif
   
 	/* Configuring AP mode */
 	Serial.print("Starting soft-AP mode ...");
@@ -365,13 +375,15 @@ void loop()
 
 	if (millis() >= del_timer)	/* After x milliseconds, calls sequence */
 	{
-		del_timer += cur_speed; /* Next "delay" */
 		cur_seq_continue();
+    del_timer += cur_speed;   /* Next "delay" */
 	}
 
-	if (millis() >= temp_timer)	// TODO COMMENT
+#ifdef TEMP_SENSOR
+	if (millis() >= temp_timer)
 	{
 		temp_timer += 1000;
 		get_temp();
 	}
+#endif
 }
