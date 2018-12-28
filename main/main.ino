@@ -305,13 +305,13 @@ void loop()
 
 	if (millis() >= del_timer)	/* After x milliseconds, calls sequence */
 	{
+    del_timer += cur_speed; /* Next "delay" */
 		cur_seq_continue();
-		del_timer += cur_speed; /* Next "delay", little bit faster */
 	}
 
 	if (millis() >= temp_timer)
 	{
+    temp_timer += 1000;
 		get_temp();
-		temp_timer += 1000;
 	}
 }
