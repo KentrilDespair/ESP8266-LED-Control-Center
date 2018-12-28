@@ -235,7 +235,7 @@ void get_temp()
 	float temps = (voltage - 0.5) * 100 ;  
 	//converting from 10 mv per degree with 500 mV offset
 	//to degrees ((voltage - 500mV) times 100)
-	Serial.printf("Temps: %f C\n");
+	Serial.printf("Temps: %f C\n", temps);
 }
 
 /* Setup Code */
