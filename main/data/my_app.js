@@ -1,5 +1,5 @@
 var app=new Framework7({root:'#app',name:'My App',id:'com.myapp.test',panel:{swipe:'left',},});var mainView=app.views.create('.view-main');function send_seq(seq,param1,param2=0,param3=0){switch(seq)
-{case 0:app.request.get("/ind?led="+param1+"&state="+param2);break;case 1:app.request.get("/one?speed="+param1);break;case 2:app.request.get("/row?speed="+param1+"&pos="+param2);break;case 3:app.request.get("/col?speed="+param1+"&pos="+param2);break;case 4:app.request.get("/cir?speed="+param1+"&len="+param2+"&dir="+param3);break;case 5:app.request.get("/swap?speed="+param1);break;case 6:app.request.get("/arw?speed="+param1+"&dir="+param2);}}
+{case 0:app.request.get("/ind?led="+param1+"&state="+param2);break;case 1:app.request.get("/one?speed="+param1);break;case 2:app.request.get("/row?speed="+param1+"&pos="+param2);break;case 3:app.request.get("/col?speed="+param1+"&pos="+param2);break;case 4:app.request.get("/cir?speed="+param1+"&len="+param2+"&dir="+param3);break;case 5:app.request.get("/swap?speed="+param1);break;case 6:app.request.get("/arw?speed="+param1+"&pos="+param2);}}
 var active_elems=document.getElementsByClassName("toggle");var tgls=[];for(var i=0;i<active_elems.length;i++){tgls.push(app.toggle.get(active_elems[i]));}
 var click_arr=[0,0,0,0,0,0,0,0,0];var chbx=document.getElementsByTagName("input");for(var i=1;i<10;i++){if(chbx[i].checked){click_arr[i-1]=1;}}
 chbx[1].onclick=function(){if(chbx[1].checked){click_arr[0]=1;}else{click_arr[0]=0;}
@@ -41,10 +41,12 @@ stepper_leds.on('change',function(){if(tgls[4].checked){send_seq(4,slider_arr[3]
 for(var i=0;i<tgls.length;i++){if(i!=5&&tgls[i].checked){tgls[i].toggle();}}
 send_seq(5,slider_arr[4].getValue());});slider_arr[4].on('changed',function(){if(tgls[5].checked){send_seq(5,slider_arr[4].getValue());}});var arw_rds=document.getElementsByName("arw_dir");tgls[6].on('change',function(){if(!(tgls[6].checked)){return;}
 for(var i=0;i<tgls.length;i++){if(i!=6&&tgls[i].checked){tgls[i].toggle();}}
-var pos=1;for(var i=0;i<arw_rds.length;i++){if(arw_rds[i].checked){break;}
-pos+=2;}
-send_seq(6,slider_arr[5].getValue(),pos);});slider_arr[5].on('changed',function(){if(tgls[6].checked){var pos=1;for(var i=0;i<arw_rds.length;i++){if(arw_rds[i].checked){break;}
-pos+=2;}
+var pos=1;if(arw_rds[1].checked){pos=7;}
+else if(arw_rds[2].checked){pos=3;}
+else if(arw_rds[3].checked){pos=5;}
+send_seq(6,slider_arr[5].getValue(),pos);});slider_arr[5].on('changed',function(){if(tgls[6].checked){var pos=1;if(arw_rds[1].checked){pos=7;}
+else if(arw_rds[2].checked){pos=3;}
+else if(arw_rds[3].checked){pos=5;}
 send_seq(6,slider_arr[5].getValue(),pos);}});arw_rds[0].onchange=function(){if(tgls[6].checked){send_seq(6,slider_arr[5].getValue(),1);}}
 arw_rds[1].onchange=function(){if(tgls[6].checked){send_seq(6,slider_arr[5].getValue(),7);}}
 arw_rds[2].onchange=function(){if(tgls[6].checked){send_seq(6,slider_arr[5].getValue(),3);}}

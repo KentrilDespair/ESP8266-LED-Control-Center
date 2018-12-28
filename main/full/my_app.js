@@ -9,7 +9,7 @@
  *        GET requests using AJAX (Framework7 approach)
  *    - Definitions of functions for each sequence, mainly
  *        using event handlers
- * Version: 1.0
+ * Version: 1.1
  */
 // new framework7 app
 var app = new Framework7({
