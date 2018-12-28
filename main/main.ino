@@ -4,7 +4,7 @@
  * @author Martin Smutny (xsmutn13)
  * @brief TODO
  * 
- * Version: 1.1	(+ Temp sensor)
+ * Version: 1.2	(+ Temp sensor)
  */
 
 /* #define SPIFFS_FORMAT */   	/* TODO Uncomment to format */    

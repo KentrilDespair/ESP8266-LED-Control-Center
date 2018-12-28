@@ -31,13 +31,13 @@ var mainView = app.views.create('.view-main');
 function send_seq(seq, param1, param2 = 0, param3 = 0) {
   switch(seq)
   {
-    case 0: app.request.put("/ind?led=" + param1 + "&state=" + param2); break;
-    case 1: app.request.put("/one?speed=" + param1); break;
-    case 2: app.request.put("/row?speed=" + param1 + "&pos=" + param2); break;
-    case 3: app.request.put("/col?speed=" + param1 + "&pos=" + param2); break;
-    case 4: app.request.put("/cir?speed=" + param1 + "&len=" + param2 + "&dir=" + param3); break;
-    case 5: app.request.put("/swap?speed=" + param1); break;
-    case 6: app.request.put("/arw?speed=" + param1 + "&pos=" + param2);
+    case 0: app.request({ method: "PUT", url: "/ind?led=" + param1 + "&state=" + param2 }); break;
+    case 1: app.request.get("/one?speed=" + param1); break;
+    case 2: app.request.get("/row?speed=" + param1 + "&pos=" + param2); break;
+    case 3: app.request.get("/col?speed=" + param1 + "&pos=" + param2); break;
+    case 4: app.request.get("/cir?speed=" + param1 + "&len=" + param2 + "&dir=" + param3); break;
+    case 5: app.request.get("/swap?speed=" + param1); break;
+    case 6: app.request.get("/arw?speed=" + param1 + "&pos=" + param2);
   }
 }
 // Getting active toggles, only one sequence active at a time
