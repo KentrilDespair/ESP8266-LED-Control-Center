@@ -58,4 +58,6 @@
 #define CLKW 97			/* Clockwise 		*/
 #define ACLKW 98		/* Anticlockwise 	*/
 
+#define TMP_PIN 0		/* For temperature sensor */
+
 #endif

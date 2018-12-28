@@ -4,7 +4,7 @@
  * @author Martin Smutny (xsmutn13)
  * @brief TODO
  * 
- * Version: 1.0
+ * Version: 1.1	(+ Temp sensor)
  */
 
 
@@ -17,6 +17,9 @@
 
 /* Global Variables */
 static uint32_t del_timer;		/* Simulates delay, or speed */
+
+static uint16_t temp_reading;	/* For temp readings */
+static uint32_t temp_timer;	
 
 /* WiFi AP credentials */
 static const char *ssid = "LED CC";
@@ -219,6 +222,22 @@ void handle_not_found()
 // /swp?speed=xxxx
 // /arw?speed=xxxx&dir=1
 
+void get_temp() 
+{
+	temp_reading = analogRead(TMP_PIN);
+  	Serial.printf("Raw temp: %u\n", temp_reading);
+	 
+	// Voltage at pin in milliVolts = (reading from ADC) * (3300/1024) 
+	float voltage = temp_reading * 3.3;
+	voltage /= 1024.0;
+
+	// now print out the temperature
+	float temps = (voltage - 0.5) * 100 ;  
+	//converting from 10 mv per degree with 500 mV offset
+	//to degrees ((voltage - 500mV) times 100)
+	Serial.printf("Temps: %f C\n");
+}
+
 /* Setup Code */
 void setup()
 {
@@ -252,6 +271,8 @@ void setup()
 	/* Reset LEDs */
 	led_reset();
 	cur_len = 1;		/* Max. number of LEDs ON */
+	del_timer = UINT_MAX;
+	temp_timer = millis() + 1000;	
   
 	/* Configuring AP mode */
 	Serial.print("Starting soft-AP mode ...");
@@ -285,6 +306,12 @@ void loop()
 	if (millis() >= del_timer)	/* After x milliseconds, calls sequence */
 	{
 		cur_seq_continue();
-		del_timer += cur_speed; /* Next "delay" */
+		del_timer += cur_speed; /* Next "delay", little bit faster */
+	}
+
+	if (millis() >= temp_timer)
+	{
+		get_temp();
+		temp_timer += 1000;
 	}
 }
