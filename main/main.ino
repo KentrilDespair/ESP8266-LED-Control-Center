@@ -273,7 +273,7 @@ bool handle_seq_arw()
 void handle_not_found()
 {
 	String req = wserver.uri();		/* request */
-	bool is_seq = false;			/* URL recognized */
+	bool is_req = false;			/* URL recognized */
 
 	switch(req[1])
 	{
@@ -295,7 +295,6 @@ void handle_not_found()
 		break;
 	case 's':
 		if (req.indexOf("/swp") != -1) { is_req = handle_seq_swp(); }
-		break;
 	}
 
 	if (is_req) {					/* Sequence request recognized */
