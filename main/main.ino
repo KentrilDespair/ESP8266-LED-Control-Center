@@ -4,7 +4,7 @@
  * @author Martin Smutny (xsmutn13)
  * @brief TODO
  * 
- * Version: 1.2	(+ Temp sensor)
+ * Version: 1.3	(+ Temp sensor)
  */
 
 /* #define SPIFFS_FORMAT */   	/* TODO Uncomment to format */    
@@ -69,7 +69,8 @@ void send_file(const char *fn, const char *c_type)
 	new_cli();
 	String f_name(fn);
 	f_name += ".gz";							/* GZIP compressed file */
-	Serial.printf("-> \"%s\" requested\n", fn);
+	Serial.printf("-> \"%s\" requested, header %s\n", fn, 
+		wserver.header("Accept-Encoding"));
 
 	// TODO if EXISTS GZIP!! & server accpets!
 
@@ -118,14 +119,19 @@ void handle_app_js()
 
 /**
  * @brief Performs check on current speed when writing into it
+ *	100 - Fastest, 3000 - Slowest
  */
-void set_cur_speed(uint16_t speed)
+void set_cur_speed(int8_t speed)
 {
-	if (speed < 100 || speed > 3000) {
+	if (speed < 0 || speed > 100) {
 		cur_speed = 1000;				/* Back to default */
 		return;
 	}
-	cur_speed = speed;
+	if (speed) {
+		cur_speed = speed * 30;
+	} else {							/* Is zero */
+		cur_speed = 100;
+	}
 	del_timer = millis() + cur_speed;	/* Sets next "delay" */
 }
 
@@ -164,7 +170,7 @@ void set_cur_dir(uint8_t dir)
  */
 void set_cur_len(uint8_t len)
 {
-	if (cur_len > 9) {
+	if (cur_len > 8) {
 		cur_len = 1;
 		return;
 	}
@@ -393,13 +399,6 @@ void setup()
 	wserver.on("/framework7.min.css", handle_fcss);
 	wserver.on("/framework7.min.js", handle_fjs);
 	wserver.on("/my_app.js", handle_app_js);
-/*	wserver.on("/ind", handle_seq_ind);
-	wserver.on("/one", handle_seq_one);
-	wserver.on("/row", handle_seq_row);
-	wserver.on("/col", handle_seq_col);
-	wserver.on("/cir", handle_seq_cir);
-	wserver.on("/swp", handle_seq_swp);
-	wserver.on("/arw", handle_seq_arw); */
 	wserver.onNotFound(handle_not_found);
 	wserver.begin();
 	Serial.println("Web Server started!");
