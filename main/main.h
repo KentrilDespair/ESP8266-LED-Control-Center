@@ -12,7 +12,6 @@
 #define MAIN_H
 
 /* LED Global variables */
-uint8_t cur_seq;		/* Current sequence */
 uint16_t cur_speed;		/* Current speed */
 uint8_t cur_pos;		/* Current position */
 uint8_t cur_len;		/* Current Number of LEDs */

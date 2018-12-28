@@ -112,114 +112,169 @@ void handle_app_js()
 }
 
 /**
+ * @brief Performs check on current speed when writing into it
+ */
+void set_cur_speed(uint16_t speed)
+{
+	if (speed < 100 || speed > 3000) {
+		cur_speed = 1000;				/* Back to default */
+		return;
+	}
+	cur_speed = speed;
+	del_timer = millis() + cur_speed;	/* Sets next "delay" */
+}
+
+/**
+ * @brief Performs check on position when writing into it
+ */
+void set_cur_pos(uint8_t pos)
+{
+	switch(pos)
+	{
+	case POS_TOP: case POS_LEFT: case POS_RIGHT: case POS_BOTTOM:	
+		cur_pos = pos;
+		return;
+	default:
+		cur_pos = POS_TOP;
+	}
+}
+
+/**
+ * @brief Performs check on direction when writing into it
+ */
+void set_cur_dir(uint8_t dir)
+{
+	switch(dir)
+	{
+	case: DIR_CLKW: case DIR_ACKLW:	
+		cur_direct = dir;
+		return;	
+	default:
+		cur_direct = CLKW;
+	}
+}
+
+/**
+ * @brief Performs check on length of leds when setting it
+ */
+void set_cur_len(uint8_t len)
+{
+	if (cur_len > 9) {
+		cur_len = 1;
+		return;
+	}
+	cur_len = len;
+}
+
+/**
+ * @brief Handles sequence "Individual"
+ */
+void handle_seq_ind()
+{
+	if (wserver.args() < 2)	{ 
+		return; 
+	}
+	change_seq(SEQ_INDIV);			/* No function call will be done */
+	seq_individual((wserver.arg(0)).toInt(), (wserver.arg(1)).toInt());
+}
+
+/**
+ * @brief Handles sequence "One by One"
+ */
+void handle_seq_one()
+{
+	if (wserver.args() < 1)	{ 
+		return; 
+	}
+	set_cur_speed((wserver.arg(0)).toInt());
+	change_seq(SEQ_ONE);
+}
+
+/**
+ * @brief Handles sequence "Row by Row"
+ */
+void handle_seq_row()
+{
+	if (wserver.args() < 2)	{ 
+		return; 
+	}
+	set_cur_speed((wserver.arg(0)).toInt());
+	set_cur_pos((wserver.arg(1)).toInt());
+	change_seq(SEQ_ROW);
+}
+
+/**
+ * @brief Handles sequence "Column by Column"
+ */
+void handle_seq_col()
+{
+	if (wserver.args() < 2)	{ 
+		return;
+	}	
+	set_cur_speed((wserver.arg(0)).toInt());
+	set_cur_pos((wserver.arg(1)).toInt());
+	change_seq(SEQ_COL);
+}
+
+/**
+ * @brief Handles sequence "Circle (Rotation)"
+ */
+void handle_seq_cir()
+{
+	if (wserver.args() < 3)	{ 
+		return; 
+	}
+	set_cur_speed((wserver.arg(0)).toInt());
+	set_cur_len((wserver.arg(1)).toInt());
+	set_cur_dir((wserver.arg(2)).toInt());
+	change_seq(SEQ_CIRC);
+}
+
+/**
+ * @brief Handles sequence "Swap"
+ */
+void handle_seq_swp
+{
+	if (wserver.args() < 1)	{ 
+		return; 
+	}
+	set_cur_speed((wserver.arg(0)).toInt());
+	change_seq(SEQ_SWAP);
+}
+
+/**
+ * @brief Handles sequence "Arrow"
+ */
+void handle_seq_arw
+{
+	if (wserver.args() < 2)	{ 
+		return;
+	}
+	set_cur_speed((wserver.arg(0)).toInt());
+	set_cur_dir((wserver.arg(1)).toInt());
+	change_seq(SEQ_ARROW);
+}
+
+/**
  * @brief Handles not found documents
  */
 void handle_not_found()
 {
-  /*
-	String msg = "<h1>Not Found</h1>";
+	String msg = "<h1>Not Found: <br>";
 	msg += wserver.uri();
 	msg += "Arguments: ";
 	msg += wserver.args();			// IS NUM
-	msg += "\n";
+	msg += "<br>";
 
 	for (uint8_t i = 0; i < wserver.args(); i++) {
-		msg += " " + wserver.argName(i)	+ ": " + wserver.arg(i) + "\n";
+		msg += wserver.argName(i) + ": " + wserver.arg(i) + "<br>";
 	}
-
-	wserver.send(404, "text/html", msg); */
-  handle_root();
-
-	String req = wserver.uri();		/* Request */
-
-	if (req.indexOf("/ind") != -1)	/* TODO SERVER ON */
-	{
-		if (wserver.args() < 2)	{ return; }
-    // /ind?led=x&state=1
-		seq_individual((wserver.arg(0)).toInt(), (wserver.arg(1)).toInt());
-		change_seq(SEQ_INDIV);	/* No function call will be done */
-	}
-	else if (req.indexOf("/one") != -1)
-	{
-		if (wserver.args() < 1)	{ return; }
-		cur_speed = (wserver.arg(0)).toInt();
-		change_seq(SEQ_ONE);
-	
-	}
-	else if (req.indexOf("/row") != -1)
-	{
-		if (wserver.args() < 2)	{ return; }
-		cur_speed = (wserver.arg(0)).toInt();
-		cur_pos = (wserver.arg(1)).toInt();
-		change_seq(SEQ_ROW);
-	
-	}
-	else if (req.indexOf("/col") != -1)
-	{
-		if (wserver.args() < 2)	{ return; }	
-		cur_speed = (wserver.arg(0)).toInt();
-		cur_pos = (wserver.arg(1)).toInt();
-		change_seq(SEQ_COL);
-	}
-	else if (req.indexOf("/cir") != -1)
-	{
-		if (wserver.args() < 3)	{ return; }
-		cur_speed = (wserver.arg(0)).toInt();
-		cur_len = (wserver.arg(1)).toInt();
-		cur_direct = (wserver.arg(2)).toInt();
-		change_seq(SEQ_CIRC);
-	}
-	else if (req.indexOf("/swp") != -1)
-	{
-		if (wserver.args() < 1)	{ return; }
-		cur_speed = (wserver.arg(0)).toInt();
-		change_seq(SEQ_SWAP);
-	}
-	else if (req.indexOf("/arw") != -1)	
-	{
-		if (wserver.args() < 2)	{ return; }
-		cur_speed = (wserver.arg(0)).toInt();
-		cur_direct = (wserver.arg(1)).toInt();
-		change_seq(SEQ_ARROW);
-	}
-	else	/* Just a normal not found */
-		return;
-
-	if (cur_speed < 100 || cur_speed > 3000) {
-		cur_speed = 1000;			/* Back to default */
-	}
-	if (cur_pos != POS_TOP && cur_pos != POS_LEFT && 
-		cur_pos != POS_RIGHT && cur_pos != POS_BOTTOM) {
-		cur_pos = POS_TOP; 
-	}
-
-	if (cur_len > 9) {
-		cur_len = 1;
-	}
-
-	if (cur_direct != CLKW && cur_direct != ACLKW) {
-		cur_direct = CLKW;
-	}
-
-	del_timer = millis() + cur_speed;
-	cur_seq_continue();
-
-	// seq_one_by_one(1000);
-	// seq_row(1000, POS_TOP);
-	// seq_col(1000, POS_TOP);
-	// seq_circle(1000, 1, CLKW);
-	// seq_swap(1000);
-	// seq_arrow(1000, POS_RIGHT);
+	msg += "</h1>";
+	wserver.send(404, "text/html", msg);
 }
 
-// /ind?led=x&state=1
-// /one?speed=xxxx
-// /row?speed=xxxx&pos=1
-// /col?speed=xxxx&pos=1
-// /cir?speed=xxxx&len=x&dir=1
-// /swp?speed=xxxx
-// /arw?speed=xxxx&dir=1
-
+/** @see https://learn.adafruit.com/tmp36-temperature-sensor/
+		using-a-temp-sensor */
 void get_temp() 
 {
 	uint16_t temp_reading;				/* 0 - 1023 range */
@@ -291,11 +346,17 @@ void setup()
 	wserver.on("/framework7.min.css", handle_fcss);
 	wserver.on("/framework7.min.js", handle_fjs);
 	wserver.on("/my_app.js", handle_app_js);
+	wserver.on("/ind", handle_seq_ind);
+	wserver.on("/one", handle_seq_one);
+	wserver.on("/row", handle_seq_row);
+	wserver.on("/col", handle_seq_col);
+	wserver.on("/cir", handle_seq_cir);
+	wserver.on("/swp", handle_seq_swp);
+	wserver.on("/arw", handle_seq_arw);
 	wserver.onNotFound(handle_not_found);
 	wserver.begin();
 	Serial.println("Web Server started!");
 }
-
 
 /* Main Loop */
 void loop() 
@@ -304,13 +365,13 @@ void loop()
 
 	if (millis() >= del_timer)	/* After x milliseconds, calls sequence */
 	{
-    del_timer += cur_speed; /* Next "delay" */
+		del_timer += cur_speed; /* Next "delay" */
 		cur_seq_continue();
 	}
 
-	if (millis() >= temp_timer)
+	if (millis() >= temp_timer)	// TODO COMMENT
 	{
-    temp_timer += 1000;
+		temp_timer += 1000;
 		get_temp();
 	}
 }

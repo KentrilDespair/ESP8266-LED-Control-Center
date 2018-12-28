@@ -2,31 +2,29 @@
  * @file leds.ino
  * @date 24.12.2018
  * @author Martin Smutny (xsmutn13)
- * @brief TODO
- *
+ * @brief Implements LED switching/sequences, consists of:
+ *	- Global variables section
+ *	- Function definitions
+ * Version: 1.0
  */
 
 #include "leds.h"
 #include "main.h"
 
+
 /* Global declarations */
-extern uint8_t cur_seq;		/* current sequence TODO in HEADER?? */
-extern uint16_t cur_speed;	/* Current speed */
-extern uint8_t cur_pos;		/* Current position */
-extern uint8_t cur_len;		/* Current Number of LEDs */
-extern uint8_t cur_direct;	/* Current direction */
+extern uint16_t cur_speed;	/**< Current speed 							*/
+extern uint8_t cur_pos;		/**< Current position 						*/
+extern uint8_t cur_len;		/**< Current Number of LEDs					*/
+extern uint8_t cur_direct;	/**< Current direction 						*/
 
-
-static uint8_t cur_state;	/* Current state of sequence */
-static uint8_t LED_cnt;		/* Auxilliary LED counter */
-static uint8_t last_len;	
-static uint8_t seq_arr[] = {LED_1, LED_2, LED_3, 	/* Matix of LEDs */
+static uint8_t cur_seq;		/**< Current sequence 						*/
+static uint8_t cur_state;	/**< Current state of sequence 				*/
+static uint8_t LED_cnt;		/**< Auxilliary LED counter					*/
+static uint8_t last_len;	/**< To save last LED length				*/
+static uint8_t seq_arr[] = {LED_1, LED_2, LED_3, 	/**< Matix of LEDs 	*/
 							LED_4, LED_5, LED_6, 
 							LED_7, LED_8, LED_9};
-
-// TODO array of current lit leds - bool? or BITS
-// TODO current param of seq
-// TODO current speed
 
 /**
  * @brief Sets all LED pins to digital LOW
@@ -80,7 +78,7 @@ void cur_seq_continue()
 	{
 	/* case SEQ_INDIV: Is manual */
 	case SEQ_ONE:
-		Serial.println("Sequence ONE");
+		Serial.println("Sequence ONE");	// TODO REMOVE
 		seq_one_by_one();
 		break;
 	case SEQ_ROW:
@@ -89,11 +87,11 @@ void cur_seq_continue()
 		break;
 	case SEQ_COL:
 		Serial.println("Sequence COLUMN");
-		seq_col(cur_pos);
+		seq_col();
 		break;
 	case SEQ_CIRC:
 		Serial.println("Sequence CIRCLE");
-		seq_circle(cur_len, cur_direct);
+		seq_circle();
 		break;
 	case SEQ_SWAP:
 		Serial.println("Sequence SWAP");
@@ -101,7 +99,7 @@ void cur_seq_continue()
 		break;
 	case SEQ_ARROW:
 		Serial.println("Sequence ARROW");
-		seq_arrow(cur_direct);
+		seq_arrow();
 		break;
 	}
 }
@@ -124,7 +122,7 @@ void seq_individual(int8_t led, int8_t state)
 
 /**
  * @brief One by one LED (sweep)
- * @param speed Switching speed 3000 - 100
+ * @param speed Switching speed 100 - 3000
  */
 void seq_one_by_one()
 {
@@ -147,53 +145,53 @@ void seq_one_by_one()
  * @param speed Switching speed
  * @param pos Starting position
  */
-void seq_row(uint8_t pos)
+void seq_row()
 {
-	uint8_t start_pos = pos;
-  
-  switch(cur_state)
-  {
-  case 0:
-    set_led(seq_arr[start_pos-1], ON);
-    set_led(seq_arr[start_pos], ON);
-    set_led(seq_arr[start_pos+1], ON);
-    LED_cnt = start_pos;
-    cur_state = 1;
-    break;
-  case 1:
-    set_led(seq_arr[LED_cnt-1], OFF);
-    set_led(seq_arr[LED_cnt], OFF);
-    set_led(seq_arr[LED_cnt+1], OFF);
-    set_led(LED_4, ON);
-    set_led(LED_5, ON);
-    set_led(LED_6, ON); 
-    cur_state = 2;
-    break;
-  case 2:
-    switch(start_pos)
-    {
-    case POS_TOP:
-      pos = POS_BOTTOM;   /* setting next position */
-      break;
-    case POS_BOTTOM:
-      pos = POS_TOP;
-      break;
-    }
-    set_led(LED_4, OFF);
-    set_led(LED_5, OFF);
-    set_led(LED_6, OFF);  
-    set_led(seq_arr[pos-1], ON);
-    set_led(seq_arr[pos], ON);
-    set_led(seq_arr[pos+1], ON); 
-    LED_cnt = pos;
-    cur_state = 3;
-    break;
-  case 3:
-    set_led(seq_arr[LED_cnt-1], OFF);
-    set_led(seq_arr[LED_cnt], OFF);
-    set_led(seq_arr[LED_cnt+1], OFF);  
-    cur_state = 0;
-  }
+	uint8_t start_pos = cur_pos;
+
+	switch(cur_state)
+	{
+	case 0:
+		set_led(seq_arr[start_pos-1], ON);
+		set_led(seq_arr[start_pos], ON);
+		set_led(seq_arr[start_pos+1], ON);
+		LED_cnt = start_pos;
+		cur_state = 1;
+		break;
+	case 1:
+		set_led(seq_arr[LED_cnt-1], OFF);
+		set_led(seq_arr[LED_cnt], OFF);
+		set_led(seq_arr[LED_cnt+1], OFF);
+		set_led(LED_4, ON);
+		set_led(LED_5, ON);
+		set_led(LED_6, ON); 
+		cur_state = 2;
+		break;
+	case 2:
+		switch(start_pos)
+		{
+		case POS_TOP:
+  			start_pos = POS_BOTTOM;   /* setting next position */
+  			break;
+		case POS_BOTTOM:
+  			start_pos = POS_TOP;
+  			break;
+		}
+		set_led(LED_4, OFF);
+		set_led(LED_5, OFF);
+		set_led(LED_6, OFF);  
+		set_led(seq_arr[start_pos-1], ON);
+		set_led(seq_arr[start_pos], ON);
+		set_led(seq_arr[start_pos+1], ON); 
+		LED_cnt = start_pos;
+		cur_state = 3;
+		break;
+	case 3:
+		set_led(seq_arr[LED_cnt-1], OFF);
+		set_led(seq_arr[LED_cnt], OFF);
+		set_led(seq_arr[LED_cnt+1], OFF);  
+		cur_state = 0;
+	}
 }
 
 /**
@@ -201,103 +199,99 @@ void seq_row(uint8_t pos)
  * @param speed Switching speed
  * @param pos Starting position
  */
-void seq_col(uint8_t pos)
+void seq_col()
 {
-  uint8_t wseq_arr[] = { LED_1,  LED_4, LED_7, // TODO
-                        LED_2, LED_5, LED_8, 
-                        LED_3, LED_6, LED_9};
-
-	uint8_t start_pos = pos;
+	uint8_t start_pos = cur_pos;
 
 	switch(cur_state)
 	{
 	case 0:
-		set_led(wseq_arr[start_pos-1], ON);
-		set_led(wseq_arr[start_pos], ON);
-		set_led(wseq_arr[start_pos+1], ON);
+		set_led(seq_arr[start_pos-3], ON);
+		set_led(seq_arr[start_pos], ON);
+		set_led(seq_arr[start_pos+3], ON);
 		LED_cnt = start_pos;
 		cur_state = 1;
 		break;
 	case 1:
-		set_led(wseq_arr[LED_cnt-1], OFF);
-		set_led(wseq_arr[LED_cnt], OFF);
-		set_led(wseq_arr[LED_cnt+1], OFF);
+		set_led(seq_arr[LED_cnt-3], OFF);
+		set_led(seq_arr[LED_cnt], OFF);
+		set_led(seq_arr[LED_cnt+3], OFF);
 		set_led(LED_2, ON);
 		set_led(LED_5, ON);
 		set_led(LED_8, ON);	
 		cur_state = 2;
 		break;
 	case 2:
-    switch(start_pos)
-    {
-    case POS_TOP:
-      pos = POS_BOTTOM;   /* setting next position */
-      break;
-    case POS_BOTTOM:
-      pos = POS_TOP;
-      break;
-    }
+		switch(start_pos)
+		{
+		case POS_LEFT:
+      		start_pos = POS_RIGHT;
+			break;
+		case POS_RIGHT:
+			start_pos = POS_LEFT;
+			break;
+		}
 		set_led(LED_2, OFF);
 		set_led(LED_5, OFF);
 		set_led(LED_8, OFF);	
-		set_led(wseq_arr[pos-1], ON);
-		set_led(wseq_arr[pos], ON);
-		set_led(wseq_arr[pos+1], ON);	
-		LED_cnt = pos;
+		set_led(seq_arr[start_pos-3], ON);
+		set_led(seq_arr[start_pos], ON);
+		set_led(seq_arr[start_pos+3], ON);	
+		LED_cnt = start_pos;
 		cur_state = 3;
 		break;
 	case 3:
-		set_led(wseq_arr[LED_cnt-1], OFF);
-		set_led(wseq_arr[LED_cnt], OFF);
-		set_led(wseq_arr[LED_cnt+1], OFF);	
+		set_led(seq_arr[LED_cnt-3], OFF);
+		set_led(seq_arr[LED_cnt], OFF);
+		set_led(seq_arr[LED_cnt+3], OFF);	
 		cur_state = 0;
 	}
 }
 
 /**
  * @brief Performs rotation, one by one in a circle fashion
- * @param speed Speed of switching, 3000 - 100
- * @param led_len Total LEDs switch at once 9 - 1
+ * @param speed Speed of switching, 100 - 3000
+ * @param led_len Total LEDs switch at once 1 - 9
  * @param direct Direction - clockwise / Anticlockwise
  */
-void seq_circle(uint8_t led_len, uint8_t direct)
+void seq_circle()
 {
-	(void)direct; /* TODO */
+	seq_circle(cur_len, cur_direct);
+
 	uint8_t cseq_arr[] = {LED_1, LED_2, LED_3, 
 						  LED_6,		LED_9, 
-						  LED_8, LED_7, LED_4};
-	int8_t i = LED_cnt;		/* Current Led */
-	int8_t y;
+						  LED_8, LED_7, LED_4};	
+
+	int8_t i = LED_cnt;		/* Current index of LED */
 	switch(cur_state)
 	{
 	case 0:
-		for (uint8_t num = 0; num < led_len; num++)
-		{
-			set_led(cseq_arr[i], ON);
-			i = (i+1)%(TOTAL_LED-1);
+		if (cur_direct == DIR_ACLKW) {	
+			for (uint8_t num = 0; num < cur_len; num++)
+			{
+				set_led(cseq_arr[i], ON);
+				i = (i-1)%(TOTAL_LED-1);
+			}
+		} else {
+			for (uint8_t num = 0; num < cur_len; num++)
+			{
+				set_led(cseq_arr[i], ON);
+				i = (i+1)%(TOTAL_LED-1);
+			}
 		}
 		LED_cnt = i;
 		cur_state = 1;
-		last_len = led_len;
+		last_len = cur_len;
 		break;
 	case 1:
-		y = i-1;
-		if (y < 0) { 
-			y = 7; 
-		}
-		for (uint8_t num = 0; num < last_len; num++)
-		{	
-			set_led(cseq_arr[y], OFF);
-			if (!y) { y = 8; }
-			y = (y-1)%(TOTAL_LED-1);
-		}
+		led_reset();		/* simply reset */
 		cur_state = 0;
 	}
 }
 
 /**
- * @brief 
- * @param speed Speed of switching, 3000 - 100
+ * @brief Swapping outwards, switching leds outwards from the center
+ * @param speed Speed of switching, 100 - 3000
  */
 void seq_swap()
 {
@@ -338,56 +332,79 @@ void seq_swap()
 }
 
 /**
- * @brief 
- * @param speed Speed of switching, 3000 - 100
- * @param direct Direction from which it starts
+ * @brief Imitates an arrow on 3x3 matrix -->
+ * @param speed Speed of switching, 100 - 3000
+ * @param pos Direction which it starts from
  */
-void seq_arrow(uint8_t direct)
+void seq_arrow()
 {	
+	if (LED_cnt != cur_pos)	{ 	/* Position has changed */
+		led_reset();
+		LED_cnt = cur_pos; 		/* save previous position */
+	}
 
-/*	switch(direct)
+	uint8_t arw_leds[] = {	LED_2, 
+							LED_1, LED_3, LED_5, 
+						 	LED_4, LED_6, LED_8,
+						 	LED_7, LED_9		};
+
+	switch(cur_pos)				/* Adjust the array */
 	{
-	case POS_TOP: case POS_LEFT: case POS_RIGHT: case POS_BOTTOM:  TODO make more*/
- (void)direct;
+	case POS_LEFT: 
+		arw_leds[0] = LED_4; arw_leds[2] = LED_7; 
+		arw_leds[4] = LED_2; arw_leds[5] = LED_8;
+		arw_leds[6] = LED_6; arw_leds[7] = LED_3;
+		break;	
+	case POS_RIGHT: 
+		arw_leds[0] = LED_6; arw_leds[1] = LED_9;
+		arw_leds[4] = LED_8; arw_leds[5] = LED_2;
+		arw_leds[6] = LED_4; arw_leds[8] = LED_1;
+		break;
+	case POS_BOTTOM:
+		arw_leds[0] = LED_8; arw_leds[1] = LED_9;
+		arw_leds[2] = LED_7; arw_leds[6] = LED_2;
+		arw_leds[7] = LED_1; arw_leds[8] = LED_3;
+	}
+
 	switch(cur_state)
 	{
 	case 0:
-		set_led(LED_2, ON);
+		set_led(arw_leds[0], ON);
 		cur_state = 1;
 		break;
 	case 1:
-		set_led(LED_1, ON);
-		set_led(LED_3, ON);
-		set_led(LED_5, ON);
+		set_led(arw_leds[1], ON);
+		set_led(arw_leds[2], ON);
+		set_led(arw_leds[3], ON);
 		cur_state = 2;
 		break;
 	case 2:
-		set_led(LED_1, OFF);
-		set_led(LED_3, OFF);
-		set_led(LED_4, ON);
-		set_led(LED_6, ON);
-		set_led(LED_8, ON);
+		set_led(arw_leds[1], OFF);
+		set_led(arw_leds[2], OFF);
+		set_led(arw_leds[4], ON);
+		set_led(arw_leds[5], ON);
+		set_led(arw_leds[6], ON);
 		cur_state = 3;
 		break;
 	case 3:
-		set_led(LED_4, OFF);
-		set_led(LED_6, OFF);
-		set_led(LED_7, ON);
-		set_led(LED_9, ON);
+		set_led(arw_leds[4], OFF);
+		set_led(arw_leds[5], OFF);
+		set_led(arw_leds[7], ON);
+		set_led(arw_leds[8], ON);
 		cur_state = 4;
 		break;
 	case 4:
-		set_led(LED_2, OFF);
-		set_led(LED_7, OFF);
-		set_led(LED_9, OFF);
+		set_led(arw_leds[0], OFF);
+		set_led(arw_leds[7], OFF);
+		set_led(arw_leds[8], OFF);
 		cur_state = 5;
 		break;
 	case 5:
-		set_led(LED_5, OFF);
+		set_led(arw_leds[3], OFF);
 		cur_state = 6;
 		break;
 	case 6:
-		set_led(LED_8, OFF);
+		set_led(arw_leds[6], OFF);
 		cur_state = 0;
-	}	
+	}
 }

@@ -55,9 +55,10 @@
 #define POS_RIGHT 5
 #define POS_BOTTOM 7
 
-#define CLKW 97			/* Clockwise 		*/
-#define ACLKW 98		/* Anticlockwise 	*/
+/* LED Matrix directions */
+#define DIR_CLKW 97			/* Clockwise 		*/
+#define DIR_ACLKW 98		/* Anticlockwise 	*/
 
-#define TMP_PIN 0		/* For temperature sensor */
+#define TMP_PIN 0			/* For temperature sensor */
 
 #endif
