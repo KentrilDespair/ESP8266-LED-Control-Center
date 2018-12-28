@@ -70,7 +70,8 @@ void send_file(const char *fn, const char *c_type)
 	String f_name(fn);
 	f_name += ".gz";							/* GZIP compressed file */
 	Serial.printf("-> \"%s\" requested, header %s\n", fn, 
-		wserver.header("Accept-Encoding"));
+		(wserver.header("Accept-Encoding")).c_str());
+   
 
 	// TODO if EXISTS GZIP!! & server accpets!
 
@@ -119,19 +120,15 @@ void handle_app_js()
 
 /**
  * @brief Performs check on current speed when writing into it
- *	100 - Fastest, 3000 - Slowest
+ *	1 slowest - 100 fastest
  */
-void set_cur_speed(int8_t speed)
+void set_cur_speed(uint8_t speed)
 {
-	if (speed < 0 || speed > 100) {
-		cur_speed = 1000;				/* Back to default */
+	if (speed < 1 || speed > 100) {
+		cur_speed = 1000;				/* Back to default - ~1 sec */
 		return;
 	}
-	if (speed) {
-		cur_speed = speed * 30;
-	} else {							/* Is zero */
-		cur_speed = 100;
-	}
+		cur_speed = 2000 - (speed*19);  /* interval 100 to 1981 */
 	del_timer = millis() + cur_speed;	/* Sets next "delay" */
 }
 
