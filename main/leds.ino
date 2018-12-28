@@ -152,6 +152,11 @@ void seq_row()
 	switch(cur_state)
 	{
 	case 0:
+    if (LED_cnt != 0) {
+      set_led(seq_arr[LED_cnt-1], OFF);
+      set_led(seq_arr[LED_cnt], OFF);
+      set_led(seq_arr[LED_cnt+1], OFF);       
+    }
 		set_led(seq_arr[start_pos-1], ON);
 		set_led(seq_arr[start_pos], ON);
 		set_led(seq_arr[start_pos+1], ON);
@@ -184,12 +189,6 @@ void seq_row()
 		set_led(seq_arr[start_pos], ON);
 		set_led(seq_arr[start_pos+1], ON); 
 		LED_cnt = start_pos;
-		cur_state = 3;
-		break;
-	case 3:
-		set_led(seq_arr[LED_cnt-1], OFF);
-		set_led(seq_arr[LED_cnt], OFF);
-		set_led(seq_arr[LED_cnt+1], OFF);  
 		cur_state = 0;
 	}
 }
@@ -206,6 +205,11 @@ void seq_col()
 	switch(cur_state)
 	{
 	case 0:
+    if (LED_cnt >= POS_LEFT) {
+      set_led(seq_arr[LED_cnt-3], OFF);
+      set_led(seq_arr[LED_cnt], OFF);
+      set_led(seq_arr[LED_cnt+3], OFF);
+    }
 		set_led(seq_arr[start_pos-3], ON);
 		set_led(seq_arr[start_pos], ON);
 		set_led(seq_arr[start_pos+3], ON);
@@ -238,12 +242,6 @@ void seq_col()
 		set_led(seq_arr[start_pos], ON);
 		set_led(seq_arr[start_pos+3], ON);	
 		LED_cnt = start_pos;
-		cur_state = 3;
-		break;
-	case 3:
-		set_led(seq_arr[LED_cnt-3], OFF);
-		set_led(seq_arr[LED_cnt], OFF);
-		set_led(seq_arr[LED_cnt+3], OFF);	
 		cur_state = 0;
 	}
 }
@@ -261,30 +259,35 @@ void seq_circle()
 						  LED_8, LED_7, LED_4};	
 
 	int8_t i = LED_cnt;		/* Current index of LED */
-	switch(cur_state)
-	{
-	case 0:
-		if (cur_direct == DIR_ACLKW) {	
+  bool add_up = false;
+  
+  led_reset();          /* simply reset */
+  if (cur_len > 1) {
+    add_up = true; 
+  }
+  if (cur_direct == DIR_ACLKW) {
 			for (uint8_t num = 0; num < cur_len; num++)
 			{
 				set_led(cseq_arr[i], ON);
-				i = (i-1)%(TOTAL_LED-1);
+        if (add_up && num+1 == cur_len) {
+          break;
+        }
+        if (i == 0) { i = 8; }
+        i = (i-1)%(TOTAL_LED-1);
 			}
-		} else {
+	} 
+	else {
 			for (uint8_t num = 0; num < cur_len; num++)
 			{
 				set_led(cseq_arr[i], ON);
-				i = (i+1)%(TOTAL_LED-1);
+        if (add_up && num+1 == cur_len) {
+          break;
+        }
+        i = (i+1)%(TOTAL_LED-1);        
 			}
-		}
-		LED_cnt = i;
-		cur_state = 1;
-		last_len = cur_len;
-		break;
-	case 1:
-		led_reset();		/* simply reset */
-		cur_state = 0;
 	}
+	LED_cnt = i;
+	last_len = cur_len;
 }
 
 /**
@@ -296,6 +299,11 @@ void seq_swap()
 	switch(cur_state)
 	{
 	case 0:
+    set_led(LED_1, OFF);
+    set_led(LED_3, OFF);
+    set_led(LED_7, OFF);
+    set_led(LED_9, OFF);
+    
 		set_led(LED_5, ON);
 		cur_state = 1;
 		break;
@@ -318,13 +326,6 @@ void seq_swap()
 		set_led(LED_3, ON);
 		set_led(LED_7, ON);
 		set_led(LED_9, ON);
-		cur_state = 3;
-		break;
-	case 3:
-		set_led(LED_1, OFF);
-		set_led(LED_3, OFF);
-		set_led(LED_7, OFF);
-		set_led(LED_9, OFF);
 		cur_state = 0;
 	}
 }

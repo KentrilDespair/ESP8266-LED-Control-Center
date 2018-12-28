@@ -262,7 +262,7 @@ bool handle_seq_arw()
 		return false;
 	}
 	set_cur_speed((wserver.arg(0)).toInt());
-	set_cur_dir((wserver.arg(1)).toInt());
+	set_cur_pos((wserver.arg(1)).toInt());
 	change_seq(SEQ_ARROW);
 	return true;
 }
@@ -278,7 +278,7 @@ void handle_not_found()
 	switch(req[1])
 	{
 	case 'a':
-		if (req.indexOf("/arw?") != -1) { is_req = handle_seq_arw(); }
+		if (req.indexOf("/arw") != -1) { is_req = handle_seq_arw(); }
 		break;
 	case 'c':
 		if (req.indexOf("/cir") != -1) { is_req = handle_seq_cir(); }
