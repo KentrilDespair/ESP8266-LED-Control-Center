@@ -17,9 +17,7 @@
 
 /* Global Variables */
 static uint32_t del_timer;		/* Simulates delay, or speed */
-
-static uint16_t temp_reading;	/* For temp readings */
-static uint32_t temp_timer;	
+static uint32_t temp_timer;		/* For temp readings */
 
 /* WiFi AP credentials */
 static const char *ssid = "LED CC";
@@ -224,6 +222,7 @@ void handle_not_found()
 
 void get_temp() 
 {
+	uint16_t temp_reading;				/* 0 - 1023 range */
 	temp_reading = analogRead(TMP_PIN);
   	Serial.printf("Raw temp: %u\n", temp_reading);
 	 
