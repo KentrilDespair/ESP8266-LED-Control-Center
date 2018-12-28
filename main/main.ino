@@ -146,11 +146,11 @@ void set_cur_dir(uint8_t dir)
 {
 	switch(dir)
 	{
-	case: DIR_CLKW: case DIR_ACKLW:	
+	case DIR_CLKW: case DIR_ACLKW:	
 		cur_direct = dir;
 		return;	
 	default:
-		cur_direct = CLKW;
+		cur_direct = DIR_CLKW;
 	}
 }
 
@@ -233,7 +233,7 @@ void handle_seq_cir()
 /**
  * @brief Handles sequence "Swap"
  */
-void handle_seq_swp
+void handle_seq_swp()
 {
 	if (wserver.args() < 1)	{ 
 		return; 
@@ -245,7 +245,7 @@ void handle_seq_swp
 /**
  * @brief Handles sequence "Arrow"
  */
-void handle_seq_arw
+void handle_seq_arw()
 {
 	if (wserver.args() < 2)	{ 
 		return;

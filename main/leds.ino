@@ -83,7 +83,7 @@ void cur_seq_continue()
 		break;
 	case SEQ_ROW:
 		Serial.println("Sequence ROW");
-		seq_row(cur_pos);
+		seq_row();
 		break;
 	case SEQ_COL:
 		Serial.println("Sequence COLUMN");
@@ -256,8 +256,6 @@ void seq_col()
  */
 void seq_circle()
 {
-	seq_circle(cur_len, cur_direct);
-
 	uint8_t cseq_arr[] = {LED_1, LED_2, LED_3, 
 						  LED_6,		LED_9, 
 						  LED_8, LED_7, LED_4};	
