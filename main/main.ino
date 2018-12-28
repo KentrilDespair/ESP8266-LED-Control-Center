@@ -7,7 +7,8 @@
  * Version: 1.1	(+ Temp sensor)
  */
 
-/* #define SPIFFS_FORMAT */   /* TODO Uncomment to format */    
+/* #define SPIFFS_FORMAT */   	/* TODO Uncomment to format */    
+/* #define TEMP_SENSOR */		/* TODO Uncomment to enable TEMP sensor */
 
 #include "main.h"
 #include "definitions.h"     // TODO HEEADERS ONLY USED - VISIBLE
@@ -173,90 +174,97 @@ void set_cur_len(uint8_t len)
 /**
  * @brief Handles sequence "Individual"
  */
-void handle_seq_ind()
+bool handle_seq_ind()
 {
 	if (wserver.args() < 2)	{ 
-		return; 
+		return false; 
 	}
 	change_seq(SEQ_INDIV);			/* No function call will be done */
 	seq_individual((wserver.arg(0)).toInt(), (wserver.arg(1)).toInt());
+	return true;
 }
 
 /**
  * @brief Handles sequence "One by One"
  */
-void handle_seq_one()
+bool handle_seq_one()
 {
 	if (wserver.args() < 1)	{ 
-		return; 
+		return false;
 	}
 	set_cur_speed((wserver.arg(0)).toInt());
 	change_seq(SEQ_ONE);
+	return true;
 }
 
 /**
  * @brief Handles sequence "Row by Row"
  */
-void handle_seq_row()
+bool handle_seq_row()
 {
 	if (wserver.args() < 2)	{ 
-		return; 
+		return false;
 	}
 	set_cur_speed((wserver.arg(0)).toInt());
 	set_cur_pos((wserver.arg(1)).toInt());
 	change_seq(SEQ_ROW);
+	return true;
 }
 
 /**
  * @brief Handles sequence "Column by Column"
  */
-void handle_seq_col()
+bool handle_seq_col()
 {
 	if (wserver.args() < 2)	{ 
-		return;
+		return false;
 	}	
 	set_cur_speed((wserver.arg(0)).toInt());
 	set_cur_pos((wserver.arg(1)).toInt());
 	change_seq(SEQ_COL);
+	return true;
 }
 
 /**
  * @brief Handles sequence "Circle (Rotation)"
  */
-void handle_seq_cir()
+bool handle_seq_cir()
 {
 	if (wserver.args() < 3)	{ 
-		return; 
+		return false;
 	}
 	set_cur_speed((wserver.arg(0)).toInt());
 	set_cur_len((wserver.arg(1)).toInt());
 	set_cur_dir((wserver.arg(2)).toInt());
 	change_seq(SEQ_CIRC);
+	return true;
 }
 
 /**
  * @brief Handles sequence "Swap"
  */
-void handle_seq_swp()
+bool handle_seq_swp()
 {
 	if (wserver.args() < 1)	{ 
-		return; 
+		return false;
 	}
 	set_cur_speed((wserver.arg(0)).toInt());
 	change_seq(SEQ_SWAP);
+	return true;
 }
 
 /**
  * @brief Handles sequence "Arrow"
  */
-void handle_seq_arw()
+bool handle_seq_arw()
 {
 	if (wserver.args() < 2)	{ 
-		return;
+		return false;
 	}
 	set_cur_speed((wserver.arg(0)).toInt());
 	set_cur_dir((wserver.arg(1)).toInt());
 	change_seq(SEQ_ARROW);
+	return true;
 }
 
 /**
@@ -264,10 +272,40 @@ void handle_seq_arw()
  */
 void handle_not_found()
 {
+	String req = wserver.uri();		/* request */
+	bool is_seq = false;			/* URL recognized */
+
+	switch(req[1])
+	{
+	case 'a':
+		if (req.indexOf("/arw?") != -1) { is_req = handle_seq_arw(); }
+		break;
+	case 'c':
+		if (req.indexOf("/cir") != -1) { is_req = handle_seq_cir(); }
+		else if (req.indexOf("/col") != -1) { is_req = handle_seq_col(); }
+		break;
+	case 'i':
+		if (req.indexOf("/ind") != -1) { is_req = handle_seq_ind(); }	
+		break;
+	case 'o':
+		if (req.indexOf("/one") != -1) { is_req = handle_seq_one(); }
+		break;
+	case 'r':
+		if (req.indexOf("/row") != -1) { is_req = handle_seq_row(); }
+		break;
+	case 's':
+		if (req.indexOf("/swp") != -1) { is_req = handle_seq_swp(); }
+		break;
+	}
+
+	if (is_req) {					/* Sequence request recognized */
+		return;
+	}
+
 	String msg = "<h1>Not Found: <br>";
-	msg += wserver.uri();
-	msg += "Arguments: ";
-	msg += wserver.args();			// IS NUM
+	msg += req;
+	msg += "<br>Arguments: ";
+	msg += wserver.args();
 	msg += "<br>";
 
 	for (uint8_t i = 0; i < wserver.args(); i++) {
@@ -356,13 +394,13 @@ void setup()
 	wserver.on("/framework7.min.css", handle_fcss);
 	wserver.on("/framework7.min.js", handle_fjs);
 	wserver.on("/my_app.js", handle_app_js);
-	wserver.on("/ind", handle_seq_ind);
+/*	wserver.on("/ind", handle_seq_ind);
 	wserver.on("/one", handle_seq_one);
 	wserver.on("/row", handle_seq_row);
 	wserver.on("/col", handle_seq_col);
 	wserver.on("/cir", handle_seq_cir);
 	wserver.on("/swp", handle_seq_swp);
-	wserver.on("/arw", handle_seq_arw);
+	wserver.on("/arw", handle_seq_arw); */
 	wserver.onNotFound(handle_not_found);
 	wserver.begin();
 	Serial.println("Web Server started!");
