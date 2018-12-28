@@ -9,7 +9,7 @@
  *        PUT requests using AJAX (Framework7 approach)
  *    - Definitions of functions for each sequence, mainly
  *        using event handlers
- * Version: 1.4
+ * Version: 1.5
  */
 // new framework7 app
 var app = new Framework7({
@@ -36,7 +36,7 @@ function send_seq(seq, param1, param2 = 0, param3 = 0) {
     case 2: app.request({method: "PUT", url: "/row?speed=" + param1 + "&pos=" + param2}); break;
     case 3: app.request({method: "PUT", url: "/col?speed=" + param1 + "&pos=" + param2}); break;
     case 4: app.request({method: "PUT", url: "/cir?speed=" + param1 + "&len=" + param2 + "&dir=" + param3}); break;
-    case 5: app.request({method: "PUT", url: "/swap?speed=" + param1}); break;
+    case 5: app.request({method: "PUT", url: "/swp?speed=" + param1}); break;
     case 6: app.request({method: "PUT", url: "/arw?speed=" + param1 + "&pos=" + param2});
   }
 }
