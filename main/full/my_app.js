@@ -37,7 +37,7 @@ function send_seq(seq, param1, param2 = 0, param3 = 0) {
     case 3: app.request.get("/col?speed=" + param1 + "&pos=" + param2); break;
     case 4: app.request.get("/cir?speed=" + param1 + "&len=" + param2 + "&dir=" + param3); break;
     case 5: app.request.get("/swap?speed=" + param1); break;
-    case 6: app.request.get("/arw?speed=" + param1 + "&dir=" + param2);
+    case 6: app.request.get("/arw?speed=" + param1 + "&pos=" + param2);
   }
 }
 // Getting active toggles, only one sequence active at a time
@@ -291,19 +291,17 @@ tgls[6].on('change', function() {
     }
   }
   var pos = 1;
-  for (var i = 0; i < arw_rds.length; i++) {
-    if (arw_rds[i].checked) { break; }
-    pos += 2;
-  }
+  if (arw_rds[1].checked) { pos = 7; }
+  else if (arw_rds[2].checked) { pos = 3; }
+  else if (arw_rds[3].checked) { pos = 5; }
   send_seq(6, slider_arr[5].getValue(), pos);
 });
 slider_arr[5].on('changed', function() {
   if (tgls[6].checked) {
-    var pos = 1;
-    for (var i = 0; i < arw_rds.length; i++) {
-      if (arw_rds[i].checked) { break; }
-      pos += 2;
-    }
+	var pos = 1;
+	if (arw_rds[1].checked) { pos = 7; }
+	else if (arw_rds[2].checked) { pos = 3; }
+	else if (arw_rds[3].checked) { pos = 5; }
     send_seq(6, slider_arr[5].getValue(), pos);
   }
 });
