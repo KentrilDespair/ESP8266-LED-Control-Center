@@ -128,7 +128,7 @@ void set_cur_speed(uint8_t speed)
 		cur_speed = 1000;				/* Back to default - ~1 sec */
 		return;
 	}
-		cur_speed = 2000 - (speed*19);  /* interval 100 to 1981 */
+	cur_speed = 2000 - (speed*19);		/* interval 100 to 1981 */
 	del_timer = millis() + cur_speed;	/* Sets next "delay" */
 }
 
