@@ -114,9 +114,10 @@ void seq_individual(int8_t led, int8_t state)
 	if (state > 1 || state < 0) { 
 		return;
 	}
-
+  Serial.printf("SETTING LED %u: %u\n", led, state);
 	if (led > 0 && led < 10) {
 		set_led(seq_arr[led-1], state);
+   
 	}
 }
 

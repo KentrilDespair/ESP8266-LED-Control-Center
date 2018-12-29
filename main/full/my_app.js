@@ -9,7 +9,7 @@
  *        PUT requests using AJAX (Framework7 approach)
  *    - Definitions of functions for each sequence, mainly
  *        using event handlers
- * Version: 1.5
+ * Version: 1.6
  */
 // new framework7 app
 var app = new Framework7({
@@ -49,7 +49,6 @@ for (var i = 0; i < active_elems.length; i++) {
 
 /* -------------------------- SEQ Individual */
 var click_arr = [0, 0, 0,  0, 0, 0,  0, 0, 0];
-
 var chbx = document.getElementsByTagName("input");
 // after refresh - fill the array
 for (var i = 1; i < 10; i++) {  // skip the active toggle
@@ -58,9 +57,9 @@ for (var i = 1; i < 10; i++) {  // skip the active toggle
   }
 }
 
-chbx[1].onclick = function() {    // 1st input is the Active toggle
-  if (chbx[1].checked) { 
-    click_arr[0] = 1; 
+chbx[1].onchange = function() {    // 1st input is the Active toggle
+  if (chbx[1].checked) {
+    click_arr[0] = 1;
   } else {
     click_arr[0] = 0;
   }
@@ -68,7 +67,7 @@ chbx[1].onclick = function() {    // 1st input is the Active toggle
     send_seq(0, 1, click_arr[0]);
   }
 }
-chbx[2].onclick = function() { // LED 2
+chbx[2].onchange = function() { // LED 2
   if (chbx[2].checked) { 
     click_arr[1] = 1; 
   } else {
@@ -78,7 +77,7 @@ chbx[2].onclick = function() { // LED 2
     send_seq(0, 2, click_arr[1]);
   }
 }
-chbx[3].onclick = function() { // LED 3
+chbx[3].onchange = function() { // LED 3
   if (chbx[3].checked) { 
     click_arr[2] = 1; 
   } else {
@@ -88,7 +87,7 @@ chbx[3].onclick = function() { // LED 3
     send_seq(0, 3, click_arr[2]);
   }
 }
-chbx[4].onclick = function() { // LED 4
+chbx[4].onchange = function() { // LED 4
   if (chbx[4].checked) { 
     click_arr[3] = 1; 
   } else {
@@ -98,7 +97,7 @@ chbx[4].onclick = function() { // LED 4
     send_seq(0, 4, click_arr[3]);
   }
 }
-chbx[5].onclick = function() { // LED 5
+chbx[5].onchange = function() { // LED 5
   if (chbx[5].checked) { 
     click_arr[4] = 1; 
   } else {
@@ -108,7 +107,7 @@ chbx[5].onclick = function() { // LED 5
     send_seq(0, 5, click_arr[4]);
   }
 }
-chbx[6].onclick = function() { // LED 6
+chbx[6].onchange = function() { // LED 6
   if (chbx[6].checked) { 
     click_arr[5] = 1; 
   } else {
@@ -118,7 +117,7 @@ chbx[6].onclick = function() { // LED 6
     send_seq(0, 6, click_arr[5]);
   }
 }
-chbx[7].onclick = function() { // LED 7
+chbx[7].onchange = function() { // LED 7
   if (chbx[7].checked) { 
     click_arr[6] = 1; 
   } else {
@@ -128,7 +127,7 @@ chbx[7].onclick = function() { // LED 7
     send_seq(0, 7, click_arr[6]);
   }
 }
-chbx[8].onclick = function() { // LED 8
+chbx[8].onchange = function() { // LED 8
   if (chbx[8].checked) { 
     click_arr[7] = 1; 
   } else {
@@ -138,7 +137,7 @@ chbx[8].onclick = function() { // LED 8
     send_seq(0, 8, click_arr[7]);
   }
 }
-chbx[9].onclick = function() { // LED 9
+chbx[9].onchange = function() { // LED 9
   if (chbx[9].checked) { 
     click_arr[8] = 1; 
   } else {

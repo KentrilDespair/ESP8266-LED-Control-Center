@@ -52,6 +52,7 @@ void new_cli()
 	if (!cli) { 
 		return;
 	}
+  cli.setTimeout(10);
 
 	Serial.print("Request from client: ");
 	Serial.println(cli.remoteIP());
@@ -179,6 +180,12 @@ void set_cur_len(uint8_t len)
  */
 bool handle_seq_ind()
 {
+  String msg;
+  for (uint8_t i = 0; i < wserver.args(); i++) {
+    msg += wserver.argName(i) + ": " + wserver.arg(i) + "\n";
+  }
+  Serial.printf("WWW Sequence IND called -> %s\n", msg.c_str());
+  
 	if (wserver.args() < 2)	{ 
 		return false; 
 	}
@@ -275,6 +282,7 @@ bool handle_seq_arw()
  */
 void handle_not_found()
 {
+  Serial.print("IN not found\n");
 	String req = wserver.uri();		/* request */
 	bool is_req = false;			/* URL recognized */
 
