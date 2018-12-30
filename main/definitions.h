@@ -2,8 +2,8 @@
  * @file definitions.h
  * @date 23.12.2018
  * @author Martin Smutny (xsmutn13)
- * @brief TODO
- * 
+ * @brief Consists of predefined constant values
+ *	used among other source files
  * Version: 1.0
  */
 
@@ -46,8 +46,6 @@
 #define SEQ_CIRC 14
 #define SEQ_SWAP 15
 #define SEQ_ARROW 16
-
-/* TODO more sequences */
 
 /* LED Matrix positions */
 #define POS_TOP 1

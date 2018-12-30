@@ -1,20 +1,20 @@
 /**
-   @file main.ino
-   @date 23.12.2018
-   @author Martin Smutny (xsmutn13)
-   @brief TODO
+ * @file main.ino
+ * @date 23.12.2018
+ * @author Martin Smutny (xsmutn13)
+ * @brief LED Control Center Main file.
+ *
+ * Version: 1.3	(+ Temp sensor)
+ */
 
-   Version: 1.3	(+ Temp sensor)
-*/
-
-/* #define SPIFFS_FORMAT */  	/* TODO Uncomment to format */
-/* #define TEMP_SENSOR */		/* TODO Uncomment to enable TEMP sensor */
-/* #define SEND_CHUNKED */
+/* #define SPIFFS_FORMAT */ /* TODO Uncomment to format */
+/* #define TEMP_SENSOR 	*/	/* TODO Uncomment to enable TEMP sensor */
+/* #define SEND_CHUNKED */	/* TODO Uncomment to enable chunked packets */
 
 
 #include "main.h"
-#include "definitions.h"     // TODO HEEADERS ONLY USED - VISIBLE
-#include <FS.h>
+#include "definitions.h"
+#include <FS.h>					/* SPIFFS */
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
@@ -23,7 +23,7 @@
 static uint32_t del_timer;		/* Simulates delay, or speed */
 
 #ifdef SEND_CHUNKED
-String str_buff;          /* Globally accessible buffer*/
+String str_buff;          		/* Globally accessible buffer*/
 #define BUFF_SIZE 4096
 #endif
 
@@ -34,12 +34,12 @@ static uint32_t temp_timer;		/* For temp readings */
 /* WiFi AP credentials */
 static const char *ssid = "LED CC";
 static const char *pass = "ledcontrolcenter";
-ESP8266WebServer wserver(80);       /* Web server */
+ESP8266WebServer wserver(80);	/* Web server */
 
 
 /**
-   @brief Prints diagnostic info
-*/
+ * @brief Prints diagnostic info
+ */
 void get_diag_info()
 {
   Serial.printf("CPU frequency: %u Mhz\n", ESP.getCpuFreqMHz());
@@ -51,8 +51,8 @@ void get_diag_info()
 }
 
 /**
-   @brief New client has connected, output serial message
-*/
+ * @brief New client has connected, output serial message
+ */
 void new_cli()
 {
   WiFiClient cli = wserver.client();
@@ -66,25 +66,25 @@ void new_cli()
 }
 
 /**
-   @brief Sends a certain file with certain content_type
- 	If GZIP file exists, then is preffered.
-   @param fn Path with a name of the file
-   @param c_type Content type of the file
-*/
+ * @brief Sends a certain file with certain content_type
+ *	If GZIP file exists, then is preffered.
+ * @param fn Path with a name of the file
+ * @param c_type Content type of the file
+ */
 void send_file(const char *fn, const char *c_type)
 {
   new_cli();
   String f_name(fn);
 
   /* Supports gzip encoding */
-    if ((wserver.header("Accept-Encoding")).startsWith("gzip")) {
-      if (SPIFFS.exists(f_name + ".gz")) {
-        f_name += ".gz"; 
+  if ((wserver.header("Accept-Encoding")).startsWith("gzip")) {
+	if (SPIFFS.exists(f_name + ".gz")) {
+		f_name += ".gz"; 
       }
     }
     
-  Serial.printf("-> \"%s\" requested, supports encoding: %s\n", f_name.begin(),
-                (wserver.header("Accept-Encoding")).c_str());
+	Serial.printf("-> \"%s\" requested, supports encoding: %s\n", 
+		f_name.begin(), (wserver.header("Accept-Encoding")).c_str());
 
   File f = SPIFFS.open(f_name, "r");    /* FS to open a file */
   if (!f) {
@@ -97,9 +97,6 @@ void send_file(const char *fn, const char *c_type)
   f.close();
 }
 
-/**
-   @brief
-*/
 #ifdef SEND_CHUNKED
 void send_file_chunked(const char *fn, const char *c_type)
 {
@@ -107,11 +104,13 @@ void send_file_chunked(const char *fn, const char *c_type)
   String f_name(fn);
   bool gzip = false;
 
-  /* Supports gzip encoding
-    if ((wserver.header("Accept-Encoding")).indexOf("gzip") != -1) {
-    f_name += ".gz";
-    gzip = true;
-    } */
+  /* Supports gzip encoding */
+  if ((wserver.header("Accept-Encoding")).startsWith("gzip")) {
+	if (SPIFFS.exists(f_name + ".gz")) {
+		f_name += ".gz"; 
+		gzip = true;
+      }
+    }
 
   Serial.printf("CHUNKED \"%s\" requested, supports encoding: %s\n", fn,
                 (wserver.header("Accept-Encoding")).c_str());
@@ -163,8 +162,8 @@ void send_file_chunked(const char *fn, const char *c_type)
 #endif
 
 /**
-   @brief Handles request of the root dir
-*/
+ * @brief Handles request of the root dir
+ */
 void handle_root()
 {
 #ifndef SEND_CHUNKED
@@ -175,8 +174,8 @@ void handle_root()
 }
 
 /**
-   @brief Handles framework CSS
-*/
+ * @brief Handles framework CSS
+ */
 void handle_fcss()
 {
 #ifndef SEND_CHUNKED
@@ -187,8 +186,8 @@ void handle_fcss()
 }
 
 /**
-   @brief Handles the framework7.min.js file
-*/
+ * @brief Handles the framework7.min.js file
+ */
 void handle_fjs()
 {
 #ifndef SEND_CHUNKED
@@ -199,8 +198,8 @@ void handle_fjs()
 }
 
 /**
-   @brief Handles the app.js file
-*/
+ * @brief Handles the app.js file
+ */
 void handle_app_js()
 {
 #ifndef SEND_CHUNKED
@@ -211,9 +210,9 @@ void handle_app_js()
 }
 
 /**
-   @brief Performs check on current speed when writing into it
- 	1 slowest - 100 fastest
-*/
+ * @brief Performs check on current speed when writing into it
+ *	1 slowest - 100 fastest
+ */
 void set_cur_speed(uint8_t speed)
 {
   if (speed < 1 || speed > 100) {
@@ -225,8 +224,8 @@ void set_cur_speed(uint8_t speed)
 }
 
 /**
-   @brief Performs check on position when writing into it
-*/
+ * @brief Performs check on position when writing into it
+ */
 void set_cur_pos(uint8_t pos)
 {
   switch (pos)
@@ -240,8 +239,8 @@ void set_cur_pos(uint8_t pos)
 }
 
 /**
-   @brief Performs check on direction when writing into it
-*/
+ * @brief Performs check on direction when writing into it
+ */
 void set_cur_dir(uint8_t dir)
 {
   switch (dir)
@@ -255,8 +254,8 @@ void set_cur_dir(uint8_t dir)
 }
 
 /**
-   @brief Performs check on length of leds when setting it
-*/
+ * @brief Performs check on length of leds when setting it
+ */
 void set_cur_len(uint8_t len)
 {
   if (cur_len > 8) {
@@ -267,8 +266,8 @@ void set_cur_len(uint8_t len)
 }
 
 /**
-   @brief Handles sequence "Individual"
-*/
+ * @brief Handles sequence "Individual"
+ */
 bool handle_seq_ind()
 {
   if (wserver.args() < 2)	{
@@ -280,8 +279,8 @@ bool handle_seq_ind()
 }
 
 /**
-   @brief Handles sequence "One by One"
-*/
+ * @brief Handles sequence "One by One"
+ */
 bool handle_seq_one()
 {
   if (wserver.args() < 1)	{
@@ -293,8 +292,8 @@ bool handle_seq_one()
 }
 
 /**
-   @brief Handles sequence "Row by Row"
-*/
+ * @brief Handles sequence "Row by Row"
+ */
 bool handle_seq_row()
 {
   if (wserver.args() < 2)	{
@@ -307,8 +306,8 @@ bool handle_seq_row()
 }
 
 /**
-   @brief Handles sequence "Column by Column"
-*/
+ * @brief Handles sequence "Column by Column"
+ */
 bool handle_seq_col()
 {
   if (wserver.args() < 2)	{
@@ -321,8 +320,8 @@ bool handle_seq_col()
 }
 
 /**
-   @brief Handles sequence "Circle (Rotation)"
-*/
+ * @brief Handles sequence "Circle (Rotation)"
+ */
 bool handle_seq_cir()
 {
   if (wserver.args() < 3)	{
@@ -336,8 +335,8 @@ bool handle_seq_cir()
 }
 
 /**
-   @brief Handles sequence "Swap"
-*/
+ * @brief Handles sequence "Swap"
+ */
 bool handle_seq_swp()
 {
   if (wserver.args() < 1)	{
@@ -349,8 +348,8 @@ bool handle_seq_swp()
 }
 
 /**
-   @brief Handles sequence "Arrow"
-*/
+ * @brief Handles sequence "Arrow"
+ */
 bool handle_seq_arw()
 {
   if (wserver.args() < 2)	{
@@ -363,12 +362,12 @@ bool handle_seq_arw()
 }
 
 /**
-   @brief Handles not found documents
-*/
+ * @brief Handles not found documents
+ */
 void handle_not_found()
 {
   String req = wserver.uri();		/* request */
-  bool is_req = false;			/* URL recognized */
+  bool is_req = false;				/* URL recognized */
 
   switch (req[1])
   {
@@ -425,7 +424,7 @@ void handle_not_found()
 
 #ifdef TEMP_SENSOR
 /** @see https://learn.adafruit.com/tmp36-temperature-sensor/
-		using-a-temp-sensor */
+ *	using-a-temp-sensor */
 void get_temp()
 {
   uint16_t temp_reading;				/* 0 - 1023 range */
