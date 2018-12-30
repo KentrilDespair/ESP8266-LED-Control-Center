@@ -59,7 +59,7 @@ inline void set_led(uint8_t led_pin, uint8_t state)
 inline void change_seq(uint8_t seq_id)
 {
 	if (!seq_id) { return; }
-
+  Serial.printf("Sequence %u\n", seq_id);
 	if (cur_seq != seq_id)		/* New sequence */
 	{
 		led_reset();
@@ -78,27 +78,21 @@ void cur_seq_continue()
 	{
 	/* case SEQ_INDIV: Is manual */
 	case SEQ_ONE:
-		Serial.println("Sequence ONE");	// TODO REMOVE
 		seq_one_by_one();
 		break;
 	case SEQ_ROW:
-		Serial.println("Sequence ROW");
 		seq_row();
 		break;
 	case SEQ_COL:
-		Serial.println("Sequence COLUMN");
 		seq_col();
 		break;
 	case SEQ_CIRC:
-		Serial.println("Sequence CIRCLE");
 		seq_circle();
 		break;
 	case SEQ_SWAP:
-		Serial.println("Sequence SWAP");
 		seq_swap();
 		break;
 	case SEQ_ARROW:
-		Serial.println("Sequence ARROW");
 		seq_arrow();
 		break;
 	}
@@ -114,7 +108,6 @@ void seq_individual(int8_t led, int8_t state)
 	if (state > 1 || state < 0) { 
 		return;
 	}
-  Serial.printf("SETTING LED %u: %u\n", led, state);
 	if (led > 0 && led < 10) {
 		set_led(seq_arr[led-1], state);
    

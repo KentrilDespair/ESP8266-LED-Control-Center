@@ -70,10 +70,9 @@ void send_file(const char *fn, const char *c_type)
 	new_cli();
 	String f_name(fn);
 	f_name += ".gz";							/* GZIP compressed file */
-	Serial.printf("-> \"%s\" requested, header %s\n", fn, 
+	Serial.printf("-> \"%s\" requested, supports encoding: %s\n", fn, 
 		(wserver.header("Accept-Encoding")).c_str());
    
-
 	// TODO if EXISTS GZIP!! & server accpets!
 
 	File f = SPIFFS.open(f_name, "r");    /* FS to open a file */
@@ -180,12 +179,6 @@ void set_cur_len(uint8_t len)
  */
 bool handle_seq_ind()
 {
-  String msg;
-  for (uint8_t i = 0; i < wserver.args(); i++) {
-    msg += wserver.argName(i) + ": " + wserver.arg(i) + "\n";
-  }
-  Serial.printf("WWW Sequence IND called -> %s\n", msg.c_str());
-  
 	if (wserver.args() < 2)	{ 
 		return false; 
 	}
@@ -282,7 +275,6 @@ bool handle_seq_arw()
  */
 void handle_not_found()
 {
-  Serial.print("IN not found\n");
 	String req = wserver.uri();		/* request */
 	bool is_req = false;			/* URL recognized */
 
@@ -334,14 +326,14 @@ void get_temp()
 	temp_reading = analogRead(TMP_PIN);
   	Serial.printf("Raw temp: %u\n", temp_reading);
 	 
-	// Voltage at pin in milliVolts = (reading from ADC) * (3300/1024) 
+	/* Voltage at pin in milliVolts = (reading from ADC) * (3300/1024) */
 	float voltage = temp_reading * 3.3;
 	voltage /= 1024.0;
 
-	// now print out the temperature
+	/* now print out the temperature */
 	float temps = (voltage - 0.5) * 100 ;  
-	//converting from 10 mv per degree with 500 mV offset
-	//to degrees ((voltage - 500mV) times 100)
+	/* converting from 10 mv per degree with 500 mV offset
+	   to degrees ((voltage - 500mV) times 100) */
 	Serial.printf("Temps: %f C\n", temps);
 }
 #endif
@@ -405,6 +397,9 @@ void setup()
 	wserver.on("/framework7.min.js", handle_fjs);
 	wserver.on("/my_app.js", handle_app_js);
 	wserver.onNotFound(handle_not_found);
+  /* Collect received headers */
+  const char *hdr_keys[] = {"Accept-Encoding"};
+  wserver.collectHeaders(hdr_keys, sizeof(hdr_keys)/sizeof(char*));
 	wserver.begin();
 	Serial.println("Web Server started!");
 }
